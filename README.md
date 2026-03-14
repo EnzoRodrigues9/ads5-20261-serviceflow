@@ -91,9 +91,9 @@ Para manter o projeto íntegro, siga estritamente estas diretrizes:
 
 O sistema de mensagens é padronizado através de um *Mixin*. Ele deve ser utilizado em qualquer `ViewModel` para informar o usuário sobre o sucesso ou falha de uma operação.
 
-# Diagrmas de classes
+# Diagramas de classes
 Este diagrama mostra a relação do BaseModel com as classes concretas.
-
+```text
 classDiagram
     class BaseModel {
         <<abstract>>
@@ -114,11 +114,12 @@ classDiagram
         +getAll()
         +delete(int id)
     }
-    
+ ```   
     BaseModel <|-- OrdemServico
     BaseRepository ..> BaseModel : usa <T>
 
 # Diagramas de componentes
+```text
 graph TD
     subgraph Core
         DioClient[DioClient]
@@ -131,7 +132,7 @@ graph TD
         Home[Home Module]
         Execution[Execution Module]
     end
-    
+   ``` 
     Modules --> Core
     Auth --> DioClient
     Home --> BaseRepository

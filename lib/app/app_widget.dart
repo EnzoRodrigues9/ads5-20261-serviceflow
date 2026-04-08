@@ -8,7 +8,7 @@ class AppWidget extends StatelessWidget {
     return MaterialApp(
       title: 'My Flutter App',
       theme: AppTheme.light,
-      initialRoute: '/',
+      initialRoute: AppRoutes.splash,
       routes: AppRoutes.routes,
     );
   }

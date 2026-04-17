@@ -124,6 +124,8 @@ classDiagram
     BaseModel <|-- Cliente
 	BaseModel <|-- Servico
     BaseModel <|-- OrdemServico
+	OrdemServico --* Cliente
+	OrdemServico *-- Servico
     BaseModel <|-- Usuario
     BaseRepository <|-- OrdemServicoRepository
     BaseRepository <|-- AuthRepository

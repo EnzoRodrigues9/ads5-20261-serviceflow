@@ -94,8 +94,13 @@ classDiagram
         +String email
     }
 
+	class Servico {
+        +String nome
+        +Time tempoEstimado
+    }
+
     class OrdemServico {
-        +String cliente
+        +Cliente cliente
         +String status
         +String fotoPath
         +String assinaturaBase64
@@ -117,6 +122,7 @@ classDiagram
 
     %% Relationships
     BaseModel <|-- Cliente
+	BaseModel <|-- Servico
     BaseModel <|-- OrdemServico
     BaseModel <|-- Usuario
     BaseRepository <|-- OrdemServicoRepository

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -10,6 +11,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final VoidCallback? onFieldSubmitted;
+  final List<TextInputFormatter>? inputFormatters; //máscara para cpf e telefone
+  final int maxLines;
 
   const CustomTextField({
     super.key,
@@ -22,6 +25,8 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
     this.onFieldSubmitted,
+    this.inputFormatters, //máscara para cpf e telefone
+    this.maxLines = 1,
   });
 
   @override
@@ -35,6 +40,8 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
+      inputFormatters: inputFormatters, //máscara para cpf e telefone
+      maxLines: maxLines,
       onFieldSubmitted: (_) => onFieldSubmitted?.call(),
       decoration: InputDecoration(
         labelText: label,

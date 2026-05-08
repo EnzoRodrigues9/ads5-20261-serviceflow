@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:serviceflow/app/core/mixins/loader.mixin.dart';
-import 'package:serviceflow/app/core/mixins/messages.mixin.dart';
+import 'package:serviceflow/app/app_routes.dart';
+import 'package:serviceflow/app/shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 // Importe o novo widget do logo
 import '../../../../shared/widgets/app_logo.dart';
@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with MessagesMixin, LoaderMixin {
+class _LoginPageState extends State<LoginPage> {
   late TextEditingController emailController;
   late TextEditingController senhaController;
 
@@ -46,27 +46,55 @@ class _LoginPageState extends State<LoginPage> with MessagesMixin, LoaderMixin {
               // Usando o widget reutilizável que criamos
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                child: AppLogo(width: double.infinity, height: 250),
+                child: AppLogo(width: double.infinity, height: 180),
               ),
 
               const SizedBox(height: 48), // Espaçamento entre logo e campos
 
               // Campos de texto e botão (reaproveitando exemplo anterior)
-              CustomTextField(label: "E-mail", controller: emailController),
+              CustomTextField(label: "E-mail", controller: emailController, keyboardType: TextInputType.emailAddress,),
               const SizedBox(height: 16),
               CustomTextField(
                   label: "Senha",
                   isPassword: true,
                   controller: senhaController),
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () => showSuccess(context, "message"),
+              CustomButton(
+                onPressed: () {
+
+                  //verifica se o campo está vazio
+
+                  if(emailController.text.isEmpty){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Preencha os campos corretamente')),
+                  );
+                  return;
+
+                  }
+
+                  //verificação email @
+                  if(!emailController.text.contains('@')) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('E-mail inválido')),
+                  );
+                  return;
+                  }
+
+                  //verificação senha 6 digitos
+                 if(senhaController.text.length <= 6) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('A senha deve ter mais de 6 caracteres')),
+                    );
+                    return;
+                  }
+
+                  Navigator.pushNamed(context, AppRoutes.dashboard);
+                },
                 child: const Text("Entrar"),
               ),
-              ElevatedButton(
-                onPressed: () => showLoading(context),
-                child: const Text("Inicia o Loader"),
-              ),
+              const SizedBox(height: 12,),
+              
+              CustomButton(onPressed: () => Navigator.pushNamed(context, AppRoutes.cadastro), child: const Text("Criar nova conta")),
             ],
           ),
         ),

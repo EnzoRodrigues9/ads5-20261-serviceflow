@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:serviceflow/app/shared/widgets/custom_button.dart';
+import 'package:serviceflow/app/shared/widgets/custom_buttons.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 // Importe o novo widget do logo
 import '../../../../shared/widgets/app_logo.dart';
@@ -80,7 +80,9 @@ class _CadastroPageState extends State<CadastroPage> {
                 controller: confirmacaoSenhaController,
               ),
               const SizedBox(height: 32),
-              CustomButton(
+              CustomPrimaryButton(
+                text: "Cadastrar",
+                icon: Icons.person_add,
                 onPressed: () {
                   //verificação se o campo está vazio
                   if (emailController.text.isEmpty ||
@@ -122,15 +124,16 @@ class _CadastroPageState extends State<CadastroPage> {
 
                   Navigator.pushNamed(context, AppRoutes.login);
                 },
-                child: const Text("Cadastrar"),
               ),
 
               const SizedBox(
                 height: 16,
               ),
-              CustomButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Voltar"))
+              CustomSecondaryButton(
+                text: "Voltar",
+                icon: Icons.arrow_back,
+                onPressed: () => Navigator.of(context).pop(),
+              )
             ],
           ),
         ),

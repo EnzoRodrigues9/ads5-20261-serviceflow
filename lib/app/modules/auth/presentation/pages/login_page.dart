@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:serviceflow/app/app_routes.dart';
-import 'package:serviceflow/app/shared/widgets/custom_button.dart';
+import 'package:serviceflow/app/shared/widgets/custom_buttons.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 // Importe o novo widget do logo
 import '../../../../shared/widgets/app_logo.dart';
@@ -52,49 +52,64 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 48), // Espaçamento entre logo e campos
 
               // Campos de texto e botão (reaproveitando exemplo anterior)
-              CustomTextField(label: "E-mail", controller: emailController, keyboardType: TextInputType.emailAddress,),
+              CustomTextField(
+                label: "E-mail",
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
               const SizedBox(height: 16),
               CustomTextField(
                   label: "Senha",
                   isPassword: true,
                   controller: senhaController),
               const SizedBox(height: 32),
-              CustomButton(
+              CustomPrimaryButton(
+                text: "Entrar",
+                icon: Icons.login,
                 onPressed: () {
-
                   //verifica se o campo está vazio
 
-                  if(emailController.text.isEmpty){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Preencha os campos corretamente')),
-                  );
-                  return;
-
-                  }
-
-                  //verificação email @
-                  if(!emailController.text.contains('@')) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('E-mail inválido')),
-                  );
-                  return;
-                  }
-
-                  //verificação senha 6 digitos
-                 if(senhaController.text.length <= 6) {
+                  if (emailController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('A senha deve ter mais de 6 caracteres')),
+                      const SnackBar(
+                          content: Text('Preencha os campos corretamente')),
                     );
                     return;
                   }
 
-                  Navigator.pushNamed(context, AppRoutes.dashboard);
+                  //verificação email @
+                  if (!emailController.text.contains('@')) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('E-mail inválido')),
+                    );
+                    return;
+                  }
+
+                  //verificação senha 6 digitos
+                  if (senhaController.text.length <= 6) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content:
+                              Text('A senha deve ter mais de 6 caracteres')),
+                    );
+                    return;
+                  }
+
+                  Navigator.pushNamed(context, AppRoutes.home);
                 },
-                child: const Text("Entrar"),
               ),
-              const SizedBox(height: 12,),
-              
-              CustomButton(onPressed: () => Navigator.pushNamed(context, AppRoutes.cadastro), child: const Text("Criar nova conta")),
+              const SizedBox(
+                height: 12,
+              ),
+
+              CustomSecondaryButton(
+                text: "Criar nova conta",
+                icon: Icons.person_add_alt_1,
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  AppRoutes.cadastro,
+                ),
+              )
             ],
           ),
         ),

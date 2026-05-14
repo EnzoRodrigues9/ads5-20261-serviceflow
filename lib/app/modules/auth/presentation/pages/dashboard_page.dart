@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../ordens_servico/presentation/pages/ordem_servico_repository.dart';
+import '../../../ordens_servico/presentation/pages/ordens_servico_repository.dart';
 import '../../../../app_routes.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -32,18 +32,6 @@ class DashboardPage extends StatelessWidget {
         title: const Text('Dashboard ServiceFlow'),
         backgroundColor: colors.primary,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: colors.primary,
-        child: const Icon(Icons.add),
-        onPressed: () async {
-          await Navigator.pushNamed(
-            context,
-            AppRoutes.ordemServico,
-          );
-
-          (context as Element).markNeedsBuild();
-        },
-      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -60,7 +48,7 @@ class DashboardPage extends StatelessWidget {
             titulo: 'Total de OS',
             quantidade: lista.length,
             valor: somaValores(lista),
-            cor: colors.primary,
+            cor: Colors.blue,
             lista: lista,
           ),
           _buildCard(
@@ -68,7 +56,7 @@ class DashboardPage extends StatelessWidget {
             titulo: 'OS em aberto',
             quantidade: abertas.length,
             valor: somaValores(abertas),
-            cor: colors.tertiary,
+            cor: Colors.yellow,
             lista: abertas,
           ),
           _buildCard(
@@ -76,7 +64,7 @@ class DashboardPage extends StatelessWidget {
             titulo: 'OS em execução',
             quantidade: execucao.length,
             valor: somaValores(execucao),
-            cor: colors.tertiaryContainer,
+            cor: Colors.orange,
             lista: execucao,
           ),
           _buildCard(
@@ -84,26 +72,10 @@ class DashboardPage extends StatelessWidget {
             titulo: 'OS executadas',
             quantidade: executadas.length,
             valor: somaValores(executadas),
-            cor: colors.secondary,
+            cor: Colors.green,
             lista: executadas,
           ),
-          const SizedBox(height: 30),
-          const Text(
-            'Ações rápidas',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
           const SizedBox(height: 16),
-          _buildMenuCard(
-            context,
-            title: 'Cadastrar Cliente',
-            icon: Icons.person_add,
-            color: colors.primary,
-            route: AppRoutes.cadastroCliente,
-          ),
-          const SizedBox(height: 12),
         ],
       ),
     );

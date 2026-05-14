@@ -58,7 +58,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
       exportBackgroundColor: Colors.white,
     );
 
-    /// MODO EDIÇÃO
+    
     if (widget.ordemServico != null) {
       clienteSelecionado = widget.ordemServico!.cliente;
 
@@ -146,11 +146,11 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
       status: widget.ordemServico?.status ?? 'Em aberto',
     );
 
-    /// NOVA OS
+    
     if (widget.ordemServico == null) {
       OrdemServicoRepository.listaOS.add(novaOS);
     } else {
-      /// EDITAR OS
+      
       final index = OrdemServicoRepository.listaOS.indexWhere(
         (os) => os.id == widget.ordemServico!.id,
       );
@@ -262,7 +262,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            /// CLIENTE
+            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor: colors.primary.withOpacity(0.12),
@@ -298,7 +298,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
 
             const SizedBox(height: 16),
 
-            /// DESCRIÇÃO
+           
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor: colors.tertiary.withOpacity(0.12),
@@ -324,7 +324,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
 
             const SizedBox(height: 16),
 
-            /// VALOR
+            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor: colors.secondary.withOpacity(0.12),
@@ -350,7 +350,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
 
             const SizedBox(height: 24),
 
-            /// FOTO ANTES
+            
             _buildFotoCard(
               titulo: 'Foto Antes',
               foto: _fotoAntes,
@@ -359,7 +359,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
 
             const SizedBox(height: 24),
 
-            /// FOTO DEPOIS
+            
             _buildFotoCard(
               titulo: 'Foto Depois',
               foto: _fotoDepois,
@@ -368,7 +368,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
 
             const SizedBox(height: 24),
 
-            /// ASSINATURA
+            
             Card(
               elevation: 2,
               shape: RoundedRectangleBorder(
@@ -428,7 +428,7 @@ class _OrdensServicoPageState extends State<OrdensServicoPage>
 
             const SizedBox(height: 32),
 
-            /// SALVAR
+            
             CustomPrimaryButton(
               text: widget.ordemServico == null
                   ? 'Salvar Ordem de Serviço'

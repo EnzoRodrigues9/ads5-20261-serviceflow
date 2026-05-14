@@ -50,7 +50,7 @@ class _ClienteListPageState extends State<ClienteListPage> {
       ),
       body: Column(
         children: [
-          /// BUSCA
+          
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextField(

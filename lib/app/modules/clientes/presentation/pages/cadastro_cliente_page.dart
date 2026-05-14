@@ -54,7 +54,7 @@ class _CadastroClientePageState
     emailController = TextEditingController();
     telefoneController = TextEditingController();
 
-    /// MODO EDIÇÃO
+   
     if (widget.cliente != null) {
       nomeController.text = widget.cliente!.nome;
       cpfController.text = widget.cliente!.cpf;
@@ -104,11 +104,11 @@ class _CadastroClientePageState
       telefone: telefoneController.text,
     );
 
-    /// NOVO CLIENTE
+  
     if (widget.cliente == null) {
       ClienteRepository.clientes.add(novoCliente);
     } else {
-      /// EDITAR CLIENTE
+      
       final index = ClienteRepository.clientes.indexWhere(
         (cliente) =>
             cliente.id == widget.cliente!.id,
@@ -145,7 +145,7 @@ class _CadastroClientePageState
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            /// NOME
+            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -169,7 +169,7 @@ class _CadastroClientePageState
 
             const SizedBox(height: 16),
 
-            /// CPF
+            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -195,7 +195,7 @@ class _CadastroClientePageState
 
             const SizedBox(height: 16),
 
-            /// EMAIL
+            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -221,7 +221,7 @@ class _CadastroClientePageState
 
             const SizedBox(height: 16),
 
-            /// TELEFONE
+            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -247,7 +247,7 @@ class _CadastroClientePageState
 
             const SizedBox(height: 32),
 
-            /// SALVAR
+            
             CustomPrimaryButton(
               text: widget.cliente == null
                   ? 'Salvar Cliente'
@@ -258,7 +258,7 @@ class _CadastroClientePageState
 
             const SizedBox(height: 16),
 
-            /// VOLTAR
+            
             CustomSecondaryButton(
               text: 'Voltar',
               icon: Icons.arrow_back,

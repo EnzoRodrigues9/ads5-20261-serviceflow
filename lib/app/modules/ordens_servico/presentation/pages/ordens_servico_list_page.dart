@@ -59,7 +59,7 @@ class _OrdensServicoListPageState
       body: Column(
         children: [
 
-          /// CAMPO BUSCA
+          
           Padding(
             padding: const EdgeInsets.all(16),
 
@@ -78,7 +78,7 @@ class _OrdensServicoListPageState
             ),
           ),
 
-          /// LISTA
+          
           Expanded(
             child: listaFiltrada.isEmpty
                 ? const CustomEmptyStateCard(
@@ -187,7 +187,7 @@ class _OrdensServicoListPageState
 
                           onSelected: (value) async {
 
-                            /// EDITAR
+                            
                             if (value == 'editar') {
 
                               await Navigator.push(
@@ -203,7 +203,7 @@ class _OrdensServicoListPageState
                               setState(() {});
                             }
 
-                            /// EXCLUIR
+                            
                             if (value == 'excluir') {
 
                               OrdemServicoRepository

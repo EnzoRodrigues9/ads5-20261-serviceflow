@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/widgets/custom_cards.dart';
 
-import '../../cliente.dart';
-import '../../cliente_repository.dart';
+import '../../cliente.model.dart';
+import '../../cliente.repository.dart';
 
 import 'cadastro_cliente_page.dart';
 
@@ -15,23 +15,41 @@ class ClienteListPage extends StatefulWidget {
 }
 
 class _ClienteListPageState extends State<ClienteListPage> {
+  final ClienteRepository repository = ClienteRepository();
+
+  List<Cliente> clientes = [];
+
   String busca = '';
+
+  @override
+  void initState() {
+    super.initState();
+    carregarClientes();
+  }
+
+  Future<void> carregarClientes() async {
+    final lista = await repository.findAll();
+
+    setState(() {
+      clientes = lista;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    final listaFiltrada = ClienteRepository.clientes.where((cliente) {
+    final listaFiltrada = clientes.where((cliente) {
       return cliente.nome.toLowerCase().contains(busca.toLowerCase()) ||
           cliente.email.toLowerCase().contains(busca.toLowerCase()) ||
-          cliente.cpf.toLowerCase().contains(busca.toLowerCase());
+          (cliente.documento ?? '')
+              .toLowerCase()
+              .contains(busca.toLowerCase());
     }).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Clientes',
-        ),
+        title: const Text('Clientes'),
         backgroundColor: colors.primary,
       ),
       floatingActionButton: FloatingActionButton(
@@ -45,12 +63,11 @@ class _ClienteListPageState extends State<ClienteListPage> {
             ),
           );
 
-          setState(() {});
+          await carregarClientes();
         },
       ),
       body: Column(
         children: [
-          
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextField(
@@ -66,8 +83,6 @@ class _ClienteListPageState extends State<ClienteListPage> {
               },
             ),
           ),
-
-          
           Expanded(
             child: listaFiltrada.isEmpty
                 ? const CustomEmptyStateCard(
@@ -85,28 +100,28 @@ class _ClienteListPageState extends State<ClienteListPage> {
                           vertical: 8,
                         ),
                         leading: CircleAvatar(
-                          backgroundColor: colors.primary.withOpacity(0.12),
+                          backgroundColor:
+                              colors.primary.withOpacity(0.12),
                           child: Icon(
                             Icons.person,
                             color: colors.primary,
                           ),
                         ),
-                        title: Text(
-                          cliente.nome,
-                        ),
+                        title: Text(cliente.nome),
                         subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 4),
                             Text(cliente.email),
                             const SizedBox(height: 4),
-                            Text(
-                              cliente.telefone,
-                            ),
+                            Text(cliente.telefone),
                             const SizedBox(height: 8),
                             CustomStatusCard(
-                              label: 'Ativo',
-                              isActive: true,
+                              label: cliente.ativo
+                                  ? 'Ativo'
+                                  : 'Inativo',
+                              isActive: cliente.ativo,
                             ),
                           ],
                         ),
@@ -114,37 +129,34 @@ class _ClienteListPageState extends State<ClienteListPage> {
                           itemBuilder: (_) => [
                             const PopupMenuItem(
                               value: 'editar',
-                              child: Text(
-                                'Editar',
-                              ),
+                              child: Text('Editar'),
                             ),
                             const PopupMenuItem(
                               value: 'excluir',
-                              child: Text(
-                                'Excluir',
-                              ),
+                              child: Text('Excluir'),
                             ),
                           ],
                           onSelected: (value) async {
-                            
                             if (value == 'editar') {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => CadastroClientePage(
+                                  builder: (_) =>
+                                      CadastroClientePage(
                                     cliente: cliente,
                                   ),
                                 ),
                               );
 
-                              setState(() {});
+                              await carregarClientes();
                             }
 
-                            
                             if (value == 'excluir') {
-                              ClienteRepository.clientes.remove(cliente);
+                              await repository.delete(
+                                cliente.id!,
+                              );
 
-                              setState(() {});
+                              await carregarClientes();
                             }
                           },
                         ),

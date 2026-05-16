@@ -7,8 +7,10 @@ import '../../../../shared/widgets/custom_buttons.dart';
 import '../../../../shared/widgets/custom_cards.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 
-import '../../cliente.dart';
-import '../../cliente_repository.dart';
+import '../../cliente.model.dart';
+import '../../cliente.repository.dart';
+import '../../cliente.service.dart';
+import '../../cliente.validation.dart';
 
 class CadastroClientePage extends StatefulWidget {
   final Cliente? cliente;
@@ -27,9 +29,11 @@ class _CadastroClientePageState
     extends State<CadastroClientePage>
     with MessagesMixin {
   late TextEditingController nomeController;
-  late TextEditingController cpfController;
+  late TextEditingController documentoController;
   late TextEditingController emailController;
   late TextEditingController telefoneController;
+
+  late ClienteService service;
 
   final telefoneMask = MaskTextInputFormatter(
     mask: '(##) #####-####',
@@ -38,7 +42,7 @@ class _CadastroClientePageState
     },
   );
 
-  final cpfMask = MaskTextInputFormatter(
+  final documentoMask = MaskTextInputFormatter(
     mask: '###.###.###-##',
     filter: {
       "#": RegExp(r'[0-9]'),
@@ -49,83 +53,66 @@ class _CadastroClientePageState
   void initState() {
     super.initState();
 
+    final repository = ClienteRepository();
+    final validation = ClienteValidation(repository);
+
+    service = ClienteService(validation, repository);
+
     nomeController = TextEditingController();
-    cpfController = TextEditingController();
+    documentoController = TextEditingController();
     emailController = TextEditingController();
     telefoneController = TextEditingController();
 
-   
     if (widget.cliente != null) {
       nomeController.text = widget.cliente!.nome;
-      cpfController.text = widget.cliente!.cpf;
+      documentoController.text =
+          widget.cliente!.documento ?? '';
       emailController.text = widget.cliente!.email;
-      telefoneController.text = widget.cliente!.telefone;
+      telefoneController.text =
+          widget.cliente!.telefone;
     }
   }
 
   @override
   void dispose() {
     nomeController.dispose();
-    cpfController.dispose();
+    documentoController.dispose();
     emailController.dispose();
     telefoneController.dispose();
 
     super.dispose();
   }
 
-  void salvarCliente() {
-    if (nomeController.text.isEmpty ||
-        cpfController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        telefoneController.text.isEmpty) {
-      showWarning(
-        context,
-        'Preencha todos os campos',
+  Future<void> salvarCliente() async {
+    try {
+      final cliente = Cliente(
+        id: widget.cliente?.id,
+        nome: nomeController.text,
+        documento: documentoController.text,
+        email: emailController.text,
+        telefone: telefoneController.text,
       );
 
-      return;
-    }
+      if (widget.cliente == null) {
+        await service.create(cliente);
+      } else {
+        await service.update(cliente);
+      }
 
-    if (!emailController.text.contains('@')) {
+      showSuccess(
+        context,
+        widget.cliente == null
+            ? 'Cliente cadastrado com sucesso'
+            : 'Cliente atualizado com sucesso',
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
       showError(
         context,
-        'E-mail inválido',
+        e.toString(),
       );
-
-      return;
     }
-
-    final novoCliente = Cliente(
-      id: widget.cliente?.id ??
-          DateTime.now().millisecondsSinceEpoch,
-      nome: nomeController.text,
-      cpf: cpfController.text,
-      email: emailController.text,
-      telefone: telefoneController.text,
-    );
-
-  
-    if (widget.cliente == null) {
-      ClienteRepository.clientes.add(novoCliente);
-    } else {
-      
-      final index = ClienteRepository.clientes.indexWhere(
-        (cliente) =>
-            cliente.id == widget.cliente!.id,
-      );
-
-      ClienteRepository.clientes[index] =
-          novoCliente;
-    }
-
-    showSuccess(
-      context,
-      widget.cliente == null
-          ? 'Cliente cadastrado com sucesso'
-          : 'Cliente atualizado com sucesso',
-    );
-
-    Navigator.of(context).pop();
   }
 
   @override
@@ -145,7 +132,6 @@ class _CadastroClientePageState
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -166,10 +152,7 @@ class _CadastroClientePageState
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -185,17 +168,14 @@ class _CadastroClientePageState
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: CustomTextField(
-                  label: 'CPF',
-                  controller: cpfController,
+                  label: 'Documento',
+                  controller: documentoController,
                   keyboardType: TextInputType.number,
-                  inputFormatters: [cpfMask],
+                  inputFormatters: [documentoMask],
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -218,10 +198,7 @@ class _CadastroClientePageState
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            
             CustomListCard(
               leading: CircleAvatar(
                 backgroundColor:
@@ -244,10 +221,7 @@ class _CadastroClientePageState
                 ),
               ),
             ),
-
             const SizedBox(height: 32),
-
-            
             CustomPrimaryButton(
               text: widget.cliente == null
                   ? 'Salvar Cliente'
@@ -255,10 +229,7 @@ class _CadastroClientePageState
               icon: Icons.save,
               onPressed: salvarCliente,
             ),
-
             const SizedBox(height: 16),
-
-            
             CustomSecondaryButton(
               text: 'Voltar',
               icon: Icons.arrow_back,

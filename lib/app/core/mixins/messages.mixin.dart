@@ -48,11 +48,11 @@ mixin MessagesMixin {
         backgroundColor: Colors.red[600],
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        duration: Duration(days: 1), // Praticamente infinito
+        duration: Duration(seconds: 8), 
         action: SnackBarAction(
           label: 'FECHAR',
           textColor: Colors.white,
-          onPressed: () => ScaffoldMessenger.of(context).clearSnackBars(),
+          onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
         ),
       ),
     );

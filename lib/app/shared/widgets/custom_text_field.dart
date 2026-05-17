@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onFieldSubmitted;
   final List<TextInputFormatter>? inputFormatters; //máscara para cpf e telefone
   final int maxLines;
+  final Function(String)? onChanged;
 
   const CustomTextField({
     super.key,
@@ -27,6 +28,7 @@ class CustomTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.inputFormatters, //máscara para cpf e telefone
     this.maxLines = 1,
+    this.onChanged,
   });
 
   @override
@@ -42,6 +44,7 @@ class CustomTextField extends StatelessWidget {
       textInputAction: textInputAction,
       inputFormatters: inputFormatters, //máscara para cpf e telefone
       maxLines: maxLines,
+      onChanged: onChanged,
       onFieldSubmitted: (_) => onFieldSubmitted?.call(),
       decoration: InputDecoration(
         labelText: label,

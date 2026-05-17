@@ -56,6 +56,7 @@ CREATE TABLE ordens_servico (
     observacao TEXT,
     pecas_aplicadas TEXT,
     valor_pecas REAL DEFAULT 0,
+    status TEXT DEFAULT 'Em aberto',
     foto_antes TEXT,
     foto_depois TEXT,
     assinatura TEXT,

@@ -1,159 +1,286 @@
 import 'package:flutter/material.dart';
 
-import '../../../ordens_servico/presentation/pages/ordens_servico_repository.dart';
-import '../../../../app_routes.dart';
+import '../../../ordens_servico/ordem_servico.model.dart';
+import '../../../ordens_servico/ordem_servico.repository.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({
+    super.key,
+  });
+
+  @override
+  State<DashboardPage> createState() =>
+      _DashboardPageState();
+}
+
+class _DashboardPageState
+    extends State<DashboardPage> {
+  final repository =
+      OrdemServicoRepository();
+
+  List<OrdemServico> lista = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    carregarDados();
+  }
+
+  Future<void> carregarDados() async {
+    lista = await repository.findAll();
+
+    setState(() {});
+  }
+
+  double calcularTotalOS(
+    OrdemServico os,
+  ) {
+    final valorServicos =
+        os.itens.fold(
+      0.0,
+      (total, item) =>
+          total +
+          (item.precoSnapshot ?? 0),
+    );
+
+    return valorServicos +
+        os.valorPecas;
+  }
+
+  double somaValores(
+    List<OrdemServico> listaOS,
+  ) {
+    return listaOS.fold(
+      0.0,
+      (total, os) =>
+          total +
+          calcularTotalOS(os),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final lista = OrdemServicoRepository.listaOS;
+    final colors =
+        Theme.of(context).colorScheme;
 
-    final abertas = lista.where((os) => os.status == 'Em aberto').toList();
+    final abertas = lista
+        .where(
+          (os) =>
+              os.status ==
+              'Em aberto',
+        )
+        .toList();
 
-    final execucao = lista.where((os) => os.status == 'Em execução').toList();
+    final emExecucao = lista
+        .where(
+          (os) =>
+              os.status ==
+              'Em execução',
+        )
+        .toList();
 
-    final executadas = lista.where((os) => os.status == 'Executada').toList();
-    
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
-
-    double somaValores(List listaOS) {
-      return listaOS.fold(
-        0.0,
-        (total, os) => total + os.valor,
-      );
-    }
+    final executadas = lista
+        .where(
+          (os) =>
+              os.status ==
+              'Executada',
+        )
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard ServiceFlow'),
-        backgroundColor: colors.primary,
+        title: const Text(
+          'Dashboard ServiceFlow',
+        ),
+        backgroundColor:
+            colors.primary,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text(
-            'Resumo das Ordens de Serviço',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+      body: RefreshIndicator(
+        onRefresh: carregarDados,
+        child: ListView(
+          padding:
+              const EdgeInsets.all(16),
+          children: [
+            const Text(
+              'Resumo das Ordens de Serviço',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight:
+                    FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          _buildCard(
-            context,
-            titulo: 'Total de OS',
-            quantidade: lista.length,
-            valor: somaValores(lista),
-            cor: Colors.blue,
-            lista: lista,
-          ),
-          _buildCard(
-            context,
-            titulo: 'OS em aberto',
-            quantidade: abertas.length,
-            valor: somaValores(abertas),
-            cor: Colors.yellow,
-            lista: abertas,
-          ),
-          _buildCard(
-            context,
-            titulo: 'OS em execução',
-            quantidade: execucao.length,
-            valor: somaValores(execucao),
-            cor: Colors.orange,
-            lista: execucao,
-          ),
-          _buildCard(
-            context,
-            titulo: 'OS executadas',
-            quantidade: executadas.length,
-            valor: somaValores(executadas),
-            cor: Colors.green,
-            lista: executadas,
-          ),
-          const SizedBox(height: 16),
-        ],
+
+            const SizedBox(height: 24),
+
+            _buildCard(
+              titulo: 'Total de OS',
+              quantidade:
+                  lista.length,
+              valor:
+                  somaValores(lista),
+              cor: Colors.blue,
+              icon:
+                  Icons.assignment,
+            ),
+
+            _buildCard(
+              titulo: 'OS Em Aberto',
+              quantidade:
+                  abertas.length,
+              valor: somaValores(
+                abertas,
+              ),
+              cor: Colors.red,
+              icon: Icons.pending,
+            ),
+
+            _buildCard(
+              titulo:
+                  'OS Em Execução',
+              quantidade:
+                  emExecucao.length,
+              valor: somaValores(
+                emExecucao,
+              ),
+              cor: Colors.orange,
+              icon:
+                  Icons.build_circle,
+            ),
+
+            _buildCard(
+              titulo:
+                  'OS Executadas',
+              quantidade:
+                  executadas.length,
+              valor: somaValores(
+                executadas,
+              ),
+              cor: Colors.green,
+              icon:
+                  Icons.check_circle,
+            ),
+
+            const SizedBox(height: 24),
+
+            Card(
+              elevation: 4,
+              child: Padding(
+                padding:
+                    const EdgeInsets.all(
+                  16,
+                ),
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment
+                          .start,
+                  children: [
+                    const Text(
+                      'Resumo Financeiro',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight:
+                            FontWeight
+                                .bold,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
+                      children: [
+                        const Text(
+                          'Faturamento Total',
+                        ),
+                        Text(
+                          'R\$ ${somaValores(lista).toStringAsFixed(2)}',
+                          style:
+                              TextStyle(
+                            color: colors
+                                .primary,
+                            fontWeight:
+                                FontWeight
+                                    .bold,
+                            fontSize:
+                                18,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(
+                      height: 12,
+                    ),
+
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
+                      children: [
+                        const Text(
+                          'OS Finalizadas',
+                        ),
+                        Text(
+                          '${executadas.length}',
+                          style:
+                              const TextStyle(
+                            fontWeight:
+                                FontWeight
+                                    .bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildCard(
-    BuildContext context, {
+  Widget _buildCard({
     required String titulo,
     required int quantidade,
     required double valor,
     required Color cor,
-    required List lista,
+    required IconData icon,
   }) {
     return Card(
       elevation: 4,
-      margin: const EdgeInsets.only(bottom: 16),
+      margin:
+          const EdgeInsets.only(
+        bottom: 16,
+      ),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: cor,
-          child: const Icon(
-            Icons.assignment,
-            color: Colors.white,
-          ),
-        ),
-        title: Text(titulo),
-        subtitle: Text(
-          '$quantidade ordens • R\$ ${valor.toStringAsFixed(2)}',
-        ),
-        trailing: const Icon(Icons.visibility),
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (_) {
-              return ListView.builder(
-                itemCount: lista.length,
-                itemBuilder: (_, index) {
-                  final os = lista[index];
-
-                  return ListTile(
-                    title: Text(os.cliente),
-                    subtitle: Text(os.descricao),
-                    trailing: Text(
-                      'R\$ ${os.valor.toStringAsFixed(2)}',
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildMenuCard(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required Color color,
-    required String route,
-  }) {
-    return Card(
-      elevation: 4,
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color,
           child: Icon(
             icon,
             color: Colors.white,
           ),
         ),
-        title: Text(title),
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () {
-          Navigator.pushNamed(context, route);
-
-          (context as Element).markNeedsBuild();
-        },
+        title: Text(
+          titulo,
+        ),
+        subtitle: Text(
+          '$quantidade ordens',
+        ),
+        trailing: Text(
+          'R\$ ${valor.toStringAsFixed(2)}',
+          style: TextStyle(
+            color: cor,
+            fontWeight:
+                FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

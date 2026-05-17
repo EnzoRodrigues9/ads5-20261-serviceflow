@@ -173,24 +173,17 @@ class CustomAppDrawer extends StatelessWidget {
         CustomDrawerItem(
           icon: Icons.bar_chart,
           title: 'Relatórios',
-          route: '/relatorios',
+          route: '/dashboard',
         ),
         CustomDrawerItem(
-          icon: Icons.inventory,
-          title: 'Estoque',
-          route: '/estoque',
+          icon: Icons.engineering,
+          title: 'Técnicos',
+          route: '/tecnicos',
         ),
-        CustomDrawerItem(
-          icon: Icons.science,
-          title: 'Laboratório',
-          route: '/menu-lab',
-        ),
-      ],
-      configurationItems: [
         CustomDrawerItem(
           icon: Icons.settings,
-          title: 'Configurações',
-          route: '/configuracoes',
+          title: 'Serviços',
+          route: '/servicos',
         ),
       ],
       onLogout: onLogout,

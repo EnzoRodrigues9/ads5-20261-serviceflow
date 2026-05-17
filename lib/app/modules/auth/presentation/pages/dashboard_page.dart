@@ -28,7 +28,7 @@ class _DashboardPageState
   }
 
   Future<void> carregarDados() async {
-    lista = await repository.findAll();
+    lista = await repository.findAllActive();
 
     setState(() {});
   }

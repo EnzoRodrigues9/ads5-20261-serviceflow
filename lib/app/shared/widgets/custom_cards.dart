@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/widgets/custom_cards.dart';
 
 /// Card customizado para listas de itens
 class CustomListCard extends StatelessWidget {

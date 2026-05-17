@@ -3,19 +3,20 @@ import 'package:serviceflow/app/core/base/base.repository.dart';
 import 'ordem_servico.model.dart';
 import 'os_item.repository.dart';
 
-class OrdemServicoRepository
-    extends BaseRepository<OrdemServico> {
-
+class OrdemServicoRepository extends BaseRepository<OrdemServico> {
   final osItemRepository = OsItemRepository();
 
   @override
   String get tableName => 'ordens_servico';
 
   @override
-  OrdemServico fromMap(
-    Map<String, dynamic> map,
-  ) {
+  OrdemServico fromMap(Map<String, dynamic> map) {
     return OrdemServico.fromMap(map);
+  }
+
+  @override
+  Future<List<OrdemServico>> findAll() async {
+    return findAllActive();
   }
 
   @override
@@ -39,9 +40,7 @@ class OrdemServicoRepository
       );
 
       ordens.add(
-        ordem.copyWith(
-          itens: itens,
-        ),
+        ordem.copyWith(itens: itens),
       );
     }
 
@@ -62,17 +61,13 @@ class OrdemServicoRepository
       return null;
     }
 
-    final ordem = OrdemServico.fromMap(
-      result.first,
-    );
+    final ordem = OrdemServico.fromMap(result.first);
 
     final itens = await osItemRepository.findByOsId(
       ordem.id!,
     );
 
-    return ordem.copyWith(
-      itens: itens,
-    );
+    return ordem.copyWith(itens: itens);
   }
 
   @override
@@ -86,9 +81,7 @@ class OrdemServicoRepository
 
     for (final item in model.itens) {
       await osItemRepository.insert(
-        item.copyWith(
-          osId: osId,
-        ),
+        item.copyWith(osId: osId),
       );
     }
 
@@ -106,18 +99,26 @@ class OrdemServicoRepository
       whereArgs: [model.id],
     );
 
-    await osItemRepository.deleteByOsId(
-      model.id!,
-    );
+    await osItemRepository.deleteByOsId(model.id!);
 
     for (final item in model.itens) {
       await osItemRepository.insert(
-        item.copyWith(
-          osId: model.id,
-        ),
+        item.copyWith(osId: model.id),
       );
     }
 
     return result;
+  }
+
+  /// 🧹 Soft delete (caso ainda não exista no BaseRepository)
+  Future<int> deleteLogical(int id) async {
+    final db = await getConnection();
+
+    return await db.update(
+      tableName,
+      {'ativo': 0},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

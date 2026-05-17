@@ -185,6 +185,11 @@ class CustomAppDrawer extends StatelessWidget {
           title: 'Serviços',
           route: '/servicos',
         ),
+        CustomDrawerItem(
+          icon: Icons.man,
+          title: 'Usuários',
+          route: '/usuarios',
+        ),
       ],
       onLogout: onLogout,
     );

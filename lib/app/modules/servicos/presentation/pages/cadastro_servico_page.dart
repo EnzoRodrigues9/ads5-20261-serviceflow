@@ -10,6 +10,7 @@ import '../../servico.model.dart';
 import '../../servico.repository.dart';
 import '../../servico.service.dart';
 import '../../servico.validation.dart';
+import '../../servico.schedule.dart';
 
 class CadastroServicoPage
     extends StatefulWidget {
@@ -98,6 +99,8 @@ class _CadastroServicoPageState
       } else {
         await service.update(servico);
       }
+        
+      await ServicoSchedule().syncPending();
 
       showSuccess(
         context,

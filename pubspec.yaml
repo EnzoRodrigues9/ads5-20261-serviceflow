@@ -19,6 +19,7 @@ dependencies:
     sdk: flutter
   supabase_flutter: ^2.12.2
   supabase: ^2.10.4
+  uuid: ^4.4.0
 flutter:
   uses-material-design: true
 

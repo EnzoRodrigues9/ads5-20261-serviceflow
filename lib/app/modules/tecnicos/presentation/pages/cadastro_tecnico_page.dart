@@ -10,6 +10,7 @@ import '../../tecnico.model.dart';
 import '../../tecnico.repository.dart';
 import '../../tecnico.service.dart';
 import '../../tecnico.validation.dart';
+import '../../tecnico.schedule.dart';
 
 class CadastroTecnicoPage extends StatefulWidget {
   final Tecnico? tecnico;
@@ -72,6 +73,8 @@ class _CadastroTecnicoPageState extends State<CadastroTecnicoPage>
       } else {
         await service.update(tecnico);
       }
+
+      await TecnicoSchedule().syncPending();
 
       showSuccess(
         context,

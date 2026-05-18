@@ -25,4 +25,23 @@ class ClienteRepository extends BaseRepository<Cliente> {
   Future<bool> existsByNomeWithoutId(String nome, int id) async {
     return await exists('nome = ? AND id != ?', [nome, id]);
   }
+
+  Future<void> updateId(
+  int oldId,
+  int newId,
+) async {
+
+  final db =
+      await getConnection();
+
+  await db.update(
+    tableName,
+    {
+      'id': newId,
+      'is_sync': 1,
+    },
+    where: 'id = ?',
+    whereArgs: [oldId],
+  );
+}
 }

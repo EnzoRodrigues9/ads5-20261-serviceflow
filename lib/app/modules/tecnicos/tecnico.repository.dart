@@ -26,4 +26,22 @@ class TecnicoRepository extends BaseRepository<Tecnico> {
       [nome, id],
     );
   }
+  Future<void> updateId(
+  int oldId,
+  int newId,
+) async {
+
+  final db =
+      await getConnection();
+
+  await db.update(
+    tableName,
+    {
+      'id': newId,
+      'is_sync': 1,
+    },
+    where: 'id = ?',
+    whereArgs: [oldId],
+  );
+}
 }

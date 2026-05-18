@@ -110,7 +110,6 @@ class OrdemServicoRepository extends BaseRepository<OrdemServico> {
     return result;
   }
 
-  /// 🧹 Soft delete (caso ainda não exista no BaseRepository)
   Future<int> deleteLogical(int id) async {
     final db = await getConnection();
 
@@ -119,6 +118,23 @@ class OrdemServicoRepository extends BaseRepository<OrdemServico> {
       {'ativo': 0},
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<void> updateId(
+    int oldId,
+    int newId,
+  ) async {
+    final db = await getConnection();
+
+    await db.update(
+      tableName,
+      {
+        'id': newId,
+        'is_sync': 1,
+      },
+      where: 'id = ?',
+      whereArgs: [oldId],
     );
   }
 }

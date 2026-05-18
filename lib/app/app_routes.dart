@@ -4,9 +4,6 @@ import 'modules/splash/presentation/pages/splash_page.dart';
 
 import 'modules/auth/presentation/pages/login_page.dart';
 import 'modules/auth/presentation/pages/cadastro_page.dart';
-import 'modules/auth/presentation/pages/menu_laboratorio_page.dart';
-import 'modules/auth/presentation/pages/demo_camera_page.dart';
-import 'modules/auth/presentation/pages/demo_signature_page.dart';
 import 'modules/auth/presentation/pages/dashboard_page.dart';
 
 import 'modules/home/presentation/pages/home_page.dart';
@@ -36,10 +33,6 @@ class AppRoutes {
   static const home = '/home';
   static const dashboard = '/dashboard';
 
-  // Laboratório
-  static const menuLab = '/menu-lab';
-  static const demoCamera = '/demo-camera';
-  static const demoSignature = '/demo-signature';
 
   // Clientes
   static const clienteList = '/clientes';
@@ -71,11 +64,6 @@ class AppRoutes {
         // Home
         home: (_) => const HomePage(),
         dashboard: (_) => const DashboardPage(),
-
-        // Laboratório
-        menuLab: (_) => const MenuLaboratorioPage(),
-        demoCamera: (_) => const DemoCameraPage(),
-        demoSignature: (_) => const DemoSignaturePage(),
 
         // Clientes
         clienteList: (_) => const ClienteListPage(),

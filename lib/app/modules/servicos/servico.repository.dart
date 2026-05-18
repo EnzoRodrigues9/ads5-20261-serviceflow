@@ -28,4 +28,23 @@ class ServicoRepository extends BaseRepository<Servico> {
       [descricao, id],
     );
   }
+
+  Future<void> updateId(
+  int oldId,
+  int newId,
+) async {
+
+  final db =
+      await getConnection();
+
+  await db.update(
+    tableName,
+    {
+      'id': newId,
+      'is_sync': 1,
+    },
+    where: 'id = ?',
+    whereArgs: [oldId],
+  );
+}
 }

@@ -1,23 +1,23 @@
 import 'package:serviceflow/app/core/base/base.schedule.dart';
 
-import 'cliente.model.dart';
-import 'cliente.provider.dart';
-import 'cliente.repository.dart';
+import 'tecnico.model.dart';
+import 'tecnico.provider.dart';
+import 'tecnico.repository.dart';
 
-class ClienteSchedule
-    extends BaseSchedule<Cliente, ClienteRepository, ClienteProvider> {
-  static final ClienteSchedule _instance = ClienteSchedule._init();
+class TecnicoSchedule
+    extends BaseSchedule<Tecnico, TecnicoRepository, TecnicoProvider> {
+  static final TecnicoSchedule _instance = TecnicoSchedule._init();
 
-  factory ClienteSchedule() => _instance;
+  factory TecnicoSchedule() => _instance;
 
-  ClienteSchedule._init()
+  TecnicoSchedule._init()
       : super(
-          ClienteRepository(),
-          ClienteProvider(),
+          TecnicoRepository(),
+          TecnicoProvider(),
         );
 
   @override
-  String get featureName => 'clientes';
+  String get featureName => 'tecnicos';
 
   @override
   Duration get syncInterval => const Duration(minutes: 5);
@@ -25,19 +25,19 @@ class ClienteSchedule
   Future<bool> syncPending() async {
     try {
       print(
-        '🚀 Sync clientes iniciado',
+        '🚀 Sync técnicos iniciado',
       );
 
-      final clientes = await repository.findAll();
+      final tecnicos = await repository.findAll();
 
-      final pendentes = clientes
+      final pendentes = tecnicos
           .where(
-            (c) => c.isSync == 0,
+            (t) => t.isSync == 0,
           )
           .toList();
 
       print(
-        '📦 Clientes pendentes: ${pendentes.length}',
+        '📦 Técnicos pendentes: ${pendentes.length}',
       );
 
       if (pendentes.isEmpty) {
@@ -46,9 +46,9 @@ class ClienteSchedule
 
       int successCount = 0;
 
-      for (final cliente in pendentes) {
+      for (final tecnico in pendentes) {
         final valid = await provider.validateBeforeSync(
-          cliente,
+          tecnico,
         );
 
         if (!valid) {
@@ -56,23 +56,23 @@ class ClienteSchedule
         }
 
         final newId = await provider.syncToCloudAndReturnId(
-          cliente,
+          tecnico,
         );
 
         if (newId != null) {
           await repository.updateId(
-            cliente.id!,
+            tecnico.id!,
             newId,
           );
 
           successCount++;
 
           print(
-            '✅ Cliente sincronizado com novo ID: $newId',
+            '✅ Técnico sincronizado com novo ID: $newId',
           );
         } else {
           print(
-            '❌ Falha ao sincronizar cliente',
+            '❌ Falha ao sincronizar técnico',
           );
         }
       }
@@ -80,7 +80,7 @@ class ClienteSchedule
       return successCount == pendentes.length;
     } catch (e, stack) {
       print(
-        '💥 Erro ClienteSchedule: $e',
+        '💥 Erro TecnicoSchedule: $e',
       );
 
       print(stack);

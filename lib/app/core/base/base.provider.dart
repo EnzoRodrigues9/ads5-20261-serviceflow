@@ -4,29 +4,24 @@ import 'package:serviceflow/app/core/http/app_client.dart';
 import 'package:serviceflow/app/core/logging/log.service.dart';
 
 /// BaseProvider - Abstração para comunicação com APIs externas
+/// 
+/// Responsabilidades:
+/// - Comunicação HTTP via AppClient
+/// - Serialização/Deserialização para formato da API externa
+/// - Tratamento de erros padronizado
+/// - Métodos CRUD para sincronização com API externa
 abstract class BaseProvider<E extends BaseModel> {
   final AppClient _client = AppClient();
   final LogService _logger = LogService();
 
   String get _className => runtimeType.toString();
 
-  /// Endpoint completo — ex: '/rest/v1/clientes'
   String get endpoint;
 
   Map<String, dynamic> toExternalFormat(E entity);
   E fromExternalFormat(Map<String, dynamic> data);
 
-  /// Sincroniza entidade local para o Supabase.
-  ///
-  /// PROBLEMA ANTERIOR:
-  /// O campo `entity.id` sempre existe (é o id do SQLite local),
-  /// então o código sempre entrava no branch UPDATE (PATCH) e nunca
-  /// fazia INSERT (POST). O Supabase não tinha o registro → retornava [].
-  ///
-  /// SOLUÇÃO:
-  /// Usamos `entity.isSync` para distinguir:
-  ///   isSync == 0  → nunca foi ao Supabase → POST (INSERT)
-  ///   isSync == 1  → já existe no Supabase → PATCH (UPDATE)
+
   Future<bool> syncToCloud(E entity) async {
     try {
       final data = toExternalFormat(entity);
@@ -37,12 +32,10 @@ abstract class BaseProvider<E extends BaseModel> {
       data.remove('is_sync');
 
       if (entity.isSync == 0) {
-        // ── INSERT: registro nunca foi ao Supabase ──────────────────────
+        // INSERT: registro nunca foi ao Supabase 
         print('📤 [$_className] POST $endpoint — novo registro');
         final response = await _client.post(endpoint, data: data);
 
-        // Supabase com Prefer: return=representation devolve a linha criada
-        // Aproveitamos para obter o id gerado pelo Supabase se necessário
         if (response.statusCode == 201 || response.statusCode == 200) {
           print('✅ [$_className] INSERT bem-sucedido');
           return true;
@@ -51,7 +44,7 @@ abstract class BaseProvider<E extends BaseModel> {
           return false;
         }
       } else {
-        // ── UPDATE: já existe no Supabase, usamos id local como filtro ──
+        // UPDATE: já existe no Supabase, usamos id local como filtro
         print('📤 [$_className] PATCH $endpoint?id=eq.${entity.id}');
         final response = await _client.patch(
           endpoint,

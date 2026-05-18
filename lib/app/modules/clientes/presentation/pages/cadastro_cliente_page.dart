@@ -108,7 +108,6 @@ class _CadastroClientePageState extends State<CadastroClientePage>
 
       Navigator.pop(context);
 
-      // Sync em segundo plano após fechar a tela
       _syncWithSupabase(savedCliente);
     } catch (e) {
       if (mounted) showError(context, e.toString());
@@ -116,26 +115,19 @@ class _CadastroClientePageState extends State<CadastroClientePage>
   }
 
   Future<void> _syncWithSupabase(Cliente cliente) async {
-    print('🔄 [SYNC] Cliente id=${cliente.id} isSync=${cliente.isSync}');
-    print('🔄 [SYNC] isSync==0 → POST (novo), isSync==1 → PATCH (atualizar)');
-
     try {
       final valid = await _provider.validateBeforeSync(cliente);
-      if (!valid) {
-        print('❌ [SYNC] Validação falhou');
-        return;
-      }
+      if (!valid) return;
 
       final success = await _provider.syncToCloud(cliente);
 
       if (success) {
-        // Marca como sincronizado no SQLite local
         await ClienteRepository().markAsSynced(cliente.id!);
-        print('✅ [SYNC] markAsSynced concluído para id=${cliente.id}');
       }
-    } catch (e, stack) {
-      print('💥 [SYNC] Exceção: $e');
-      print('📋 Stack: $stack');
+    } catch (e) {
+      if (mounted) {
+        showError(context, e.toString());
+      }
     }
   }
 

@@ -8,6 +8,7 @@ import '../../../../shared/widgets/custom_cards.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 
 import '../../cliente.model.dart';
+import '../../cliente.provider.dart';
 import '../../cliente.repository.dart';
 import '../../cliente.service.dart';
 import '../../cliente.validation.dart';
@@ -21,12 +22,10 @@ class CadastroClientePage extends StatefulWidget {
   });
 
   @override
-  State<CadastroClientePage> createState() =>
-      _CadastroClientePageState();
+  State<CadastroClientePage> createState() => _CadastroClientePageState();
 }
 
-class _CadastroClientePageState
-    extends State<CadastroClientePage>
+class _CadastroClientePageState extends State<CadastroClientePage>
     with MessagesMixin {
   late TextEditingController nomeController;
   late TextEditingController documentoController;
@@ -34,19 +33,16 @@ class _CadastroClientePageState
   late TextEditingController telefoneController;
 
   late ClienteService service;
+  final _provider = ClienteProvider();
 
   final telefoneMask = MaskTextInputFormatter(
     mask: '(##) #####-####',
-    filter: {
-      "#": RegExp(r'[0-9]'),
-    },
+    filter: {'#': RegExp(r'[0-9]')},
   );
 
   final documentoMask = MaskTextInputFormatter(
     mask: '###.###.###-##',
-    filter: {
-      "#": RegExp(r'[0-9]'),
-    },
+    filter: {'#': RegExp(r'[0-9]')},
   );
 
   @override
@@ -55,7 +51,6 @@ class _CadastroClientePageState
 
     final repository = ClienteRepository();
     final validation = ClienteValidation(repository);
-
     service = ClienteService(validation, repository);
 
     nomeController = TextEditingController();
@@ -65,11 +60,9 @@ class _CadastroClientePageState
 
     if (widget.cliente != null) {
       nomeController.text = widget.cliente!.nome;
-      documentoController.text =
-          widget.cliente!.documento ?? '';
+      documentoController.text = widget.cliente!.documento ?? '';
       emailController.text = widget.cliente!.email;
-      telefoneController.text =
-          widget.cliente!.telefone;
+      telefoneController.text = widget.cliente!.telefone;
     }
   }
 
@@ -79,7 +72,6 @@ class _CadastroClientePageState
     documentoController.dispose();
     emailController.dispose();
     telefoneController.dispose();
-
     super.dispose();
   }
 
@@ -87,31 +79,63 @@ class _CadastroClientePageState
     try {
       final cliente = Cliente(
         id: widget.cliente?.id,
+        // IMPORTANTE: preserva isSync do cliente original ao editar.
+        // - Novo cliente: isSync = 0 (padrão do modelo) → BaseProvider fará POST
+        // - Cliente existente que já foi ao Supabase: isSync = 1 → fará PATCH
+        // - Cliente existente ainda não sincronizado: isSync = 0 → fará POST
+        isSync: widget.cliente?.isSync ?? 0,
         nome: nomeController.text,
         documento: documentoController.text,
         email: emailController.text,
         telefone: telefoneController.text,
       );
 
+      final Cliente savedCliente;
       if (widget.cliente == null) {
-        await service.create(cliente);
+        savedCliente = await service.create(cliente);
       } else {
-        await service.update(cliente);
+        savedCliente = await service.update(cliente);
       }
+
+      if (!mounted) return;
 
       showSuccess(
         context,
         widget.cliente == null
-            ? 'Cliente cadastrado com sucesso'
-            : 'Cliente atualizado com sucesso',
+            ? 'Cliente salvo localmente!'
+            : 'Cliente atualizado localmente!',
       );
 
       Navigator.pop(context);
+
+      // Sync em segundo plano após fechar a tela
+      _syncWithSupabase(savedCliente);
     } catch (e) {
-      showError(
-        context,
-        e.toString(),
-      );
+      if (mounted) showError(context, e.toString());
+    }
+  }
+
+  Future<void> _syncWithSupabase(Cliente cliente) async {
+    print('🔄 [SYNC] Cliente id=${cliente.id} isSync=${cliente.isSync}');
+    print('🔄 [SYNC] isSync==0 → POST (novo), isSync==1 → PATCH (atualizar)');
+
+    try {
+      final valid = await _provider.validateBeforeSync(cliente);
+      if (!valid) {
+        print('❌ [SYNC] Validação falhou');
+        return;
+      }
+
+      final success = await _provider.syncToCloud(cliente);
+
+      if (success) {
+        // Marca como sincronizado no SQLite local
+        await ClienteRepository().markAsSynced(cliente.id!);
+        print('✅ [SYNC] markAsSynced concluído para id=${cliente.id}');
+      }
+    } catch (e, stack) {
+      print('💥 [SYNC] Exceção: $e');
+      print('📋 Stack: $stack');
     }
   }
 
@@ -122,9 +146,7 @@ class _CadastroClientePageState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.cliente == null
-              ? 'Cadastro de Cliente'
-              : 'Editar Cliente',
+          widget.cliente == null ? 'Cadastro de Cliente' : 'Editar Cliente',
         ),
         backgroundColor: colors.primary,
       ),
@@ -134,16 +156,10 @@ class _CadastroClientePageState
           children: [
             CustomListCard(
               leading: CircleAvatar(
-                backgroundColor:
-                    colors.primary.withOpacity(0.12),
-                child: Icon(
-                  Icons.person,
-                  color: colors.primary,
-                ),
+                backgroundColor: colors.primary.withOpacity(0.12),
+                child: Icon(Icons.person, color: colors.primary),
               ),
-              title: const Text(
-                'Nome / Razão Social',
-              ),
+              title: const Text('Nome / Razão Social'),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: CustomTextField(
@@ -155,16 +171,10 @@ class _CadastroClientePageState
             const SizedBox(height: 16),
             CustomListCard(
               leading: CircleAvatar(
-                backgroundColor:
-                    colors.secondary.withOpacity(0.12),
-                child: Icon(
-                  Icons.badge,
-                  color: colors.secondary,
-                ),
+                backgroundColor: colors.secondary.withOpacity(0.12),
+                child: Icon(Icons.badge, color: colors.secondary),
               ),
-              title: const Text(
-                'CPF / CNPJ',
-              ),
+              title: const Text('CPF / CNPJ'),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: CustomTextField(
@@ -178,39 +188,26 @@ class _CadastroClientePageState
             const SizedBox(height: 16),
             CustomListCard(
               leading: CircleAvatar(
-                backgroundColor:
-                    colors.tertiary.withOpacity(0.12),
-                child: Icon(
-                  Icons.email,
-                  color: colors.tertiary,
-                ),
+                backgroundColor: colors.tertiary.withOpacity(0.12),
+                child: Icon(Icons.email, color: colors.tertiary),
               ),
-              title: const Text(
-                'E-mail',
-              ),
+              title: const Text('E-mail'),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: CustomTextField(
                   label: 'E-mail',
                   controller: emailController,
-                  keyboardType:
-                      TextInputType.emailAddress,
+                  keyboardType: TextInputType.emailAddress,
                 ),
               ),
             ),
             const SizedBox(height: 16),
             CustomListCard(
               leading: CircleAvatar(
-                backgroundColor:
-                    Colors.green.withOpacity(0.12),
-                child: const Icon(
-                  Icons.phone,
-                  color: Colors.green,
-                ),
+                backgroundColor: Colors.green.withOpacity(0.12),
+                child: const Icon(Icons.phone, color: Colors.green),
               ),
-              title: const Text(
-                'Telefone',
-              ),
+              title: const Text('Telefone'),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: CustomTextField(
@@ -233,8 +230,7 @@ class _CadastroClientePageState
             CustomSecondaryButton(
               text: 'Voltar',
               icon: Icons.arrow_back,
-              onPressed: () =>
-                  Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         ),

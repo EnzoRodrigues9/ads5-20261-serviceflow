@@ -159,6 +159,7 @@ class _ClienteListPageState extends State<ClienteListPage> {
                               await carregarClientes();
                             }
                           },
+                          
                         ),
                       );
                     },

@@ -7,10 +7,6 @@ class ClienteProvider extends BaseProvider<Cliente> {
 
   @override
   Map<String, dynamic> toExternalFormat(Cliente cliente) {
-    // Envia APENAS as colunas que existem no Supabase.
-    // Campos removidos: id, created_at, is_sync (o BaseProvider já remove esses).
-    // 'ativo' é bool no Supabase (coluna bool), Dart bool é mapeado corretamente.
-    // 'updated_at' foi removido — NÃO existe na tabela (causava erro 400).
     return {
       'nome': cliente.nome,
       'email': cliente.email,

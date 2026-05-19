@@ -4,7 +4,7 @@ import 'modules/splash/presentation/pages/splash_page.dart';
 
 import 'modules/auth/presentation/pages/login_page.dart';
 import 'modules/auth/presentation/pages/cadastro_page.dart';
-import 'modules/auth/presentation/pages/dashboard_page.dart';
+import 'modules/dashboard/dashboard_page.dart';
 
 import 'modules/home/presentation/pages/home_page.dart';
 
@@ -33,7 +33,6 @@ class AppRoutes {
   static const home = '/home';
   static const dashboard = '/dashboard';
 
-
   // Clientes
   static const clienteList = '/clientes';
   static const cadastroCliente = '/clientes/cadastro';
@@ -45,12 +44,11 @@ class AppRoutes {
   // Ordens de Serviço
   static const ordensServicoList = '/ordens-servico';
   static const ordensServico = '/ordens-servico/cadastro';
-  
 
   //Serviços
   static const servicoList = '/servicos';
   static const cadastroServico = '/servicos/cadastro';
-  
+
   //Usuários
   static const usuariosList = '/usuarios';
   static const cadastroUsuario = '/usuarios-cadastro';
@@ -84,6 +82,5 @@ class AppRoutes {
         // Usuários
         usuariosList: (_) => const UsuariosListPage(),
         cadastroUsuario: (_) => const CadastroUsuarioPage(),
-        
       };
 }

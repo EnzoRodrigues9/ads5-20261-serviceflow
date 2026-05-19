@@ -16,7 +16,6 @@ class ClienteService
     );
   }
 
-  // Métodos específicos do domínio Cliente
   Future<List<Cliente>> findByNome(String nome) async {
     final db = await repository.getConnection();
     final result = await db.query(

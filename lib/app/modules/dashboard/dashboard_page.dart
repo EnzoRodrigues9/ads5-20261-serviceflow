@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../ordens_servico/ordem_servico.model.dart';
-import '../../../ordens_servico/ordem_servico.repository.dart';
+import '../ordens_servico/ordem_servico.model.dart';
+import '../ordens_servico/ordem_servico.repository.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({
@@ -9,14 +9,11 @@ class DashboardPage extends StatefulWidget {
   });
 
   @override
-  State<DashboardPage> createState() =>
-      _DashboardPageState();
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState
-    extends State<DashboardPage> {
-  final repository =
-      OrdemServicoRepository();
+class _DashboardPageState extends State<DashboardPage> {
+  final repository = OrdemServicoRepository();
 
   List<OrdemServico> lista = [];
 
@@ -36,16 +33,12 @@ class _DashboardPageState
   double calcularTotalOS(
     OrdemServico os,
   ) {
-    final valorServicos =
-        os.itens.fold(
+    final valorServicos = os.itens.fold(
       0.0,
-      (total, item) =>
-          total +
-          (item.precoSnapshot ?? 0),
+      (total, item) => total + (item.precoSnapshot ?? 0),
     );
 
-    return valorServicos +
-        os.valorPecas;
+    return valorServicos + os.valorPecas;
   }
 
   double somaValores(
@@ -53,38 +46,29 @@ class _DashboardPageState
   ) {
     return listaOS.fold(
       0.0,
-      (total, os) =>
-          total +
-          calcularTotalOS(os),
+      (total, os) => total + calcularTotalOS(os),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).colorScheme;
+    final colors = Theme.of(context).colorScheme;
 
     final abertas = lista
         .where(
-          (os) =>
-              os.status ==
-              'Em aberto',
+          (os) => os.status == 'Em aberto',
         )
         .toList();
 
     final emExecucao = lista
         .where(
-          (os) =>
-              os.status ==
-              'Em execução',
+          (os) => os.status == 'Em execução',
         )
         .toList();
 
     final executadas = lista
         .where(
-          (os) =>
-              os.status ==
-              'Executada',
+          (os) => os.status == 'Executada',
         )
         .toList();
 
@@ -93,145 +77,104 @@ class _DashboardPageState
         title: const Text(
           'Dashboard ServiceFlow',
         ),
-        backgroundColor:
-            colors.primary,
+        backgroundColor: colors.primary,
       ),
       body: RefreshIndicator(
         onRefresh: carregarDados,
         child: ListView(
-          padding:
-              const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           children: [
             const Text(
               'Resumo das Ordens de Serviço',
               style: TextStyle(
                 fontSize: 20,
-                fontWeight:
-                    FontWeight.bold,
+                fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 24),
-
             _buildCard(
               titulo: 'Total de OS',
-              quantidade:
-                  lista.length,
-              valor:
-                  somaValores(lista),
+              quantidade: lista.length,
+              valor: somaValores(lista),
               cor: Colors.blue,
-              icon:
-                  Icons.assignment,
+              icon: Icons.assignment,
             ),
-
             _buildCard(
               titulo: 'OS Em Aberto',
-              quantidade:
-                  abertas.length,
+              quantidade: abertas.length,
               valor: somaValores(
                 abertas,
               ),
               cor: Colors.red,
               icon: Icons.pending,
             ),
-
             _buildCard(
-              titulo:
-                  'OS Em Execução',
-              quantidade:
-                  emExecucao.length,
+              titulo: 'OS Em Execução',
+              quantidade: emExecucao.length,
               valor: somaValores(
                 emExecucao,
               ),
               cor: Colors.orange,
-              icon:
-                  Icons.build_circle,
+              icon: Icons.build_circle,
             ),
-
             _buildCard(
-              titulo:
-                  'OS Executadas',
-              quantidade:
-                  executadas.length,
+              titulo: 'OS Executadas',
+              quantidade: executadas.length,
               valor: somaValores(
                 executadas,
               ),
               cor: Colors.green,
-              icon:
-                  Icons.check_circle,
+              icon: Icons.check_circle,
             ),
-
             const SizedBox(height: 24),
-
             Card(
               elevation: 4,
               child: Padding(
-                padding:
-                    const EdgeInsets.all(
+                padding: const EdgeInsets.all(
                   16,
                 ),
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
                       'Resumo Financeiro',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight:
-                            FontWeight
-                                .bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(
                       height: 20,
                     ),
-
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment
-                              .spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
                           'Faturamento Total',
                         ),
                         Text(
                           'R\$ ${somaValores(lista).toStringAsFixed(2)}',
-                          style:
-                              TextStyle(
-                            color: colors
-                                .primary,
-                            fontWeight:
-                                FontWeight
-                                    .bold,
-                            fontSize:
-                                18,
+                          style: TextStyle(
+                            color: colors.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(
                       height: 12,
                     ),
-
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment
-                              .spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
                           'OS Finalizadas',
                         ),
                         Text(
                           '${executadas.length}',
-                          style:
-                              const TextStyle(
-                            fontWeight:
-                                FontWeight
-                                    .bold,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -255,8 +198,7 @@ class _DashboardPageState
   }) {
     return Card(
       elevation: 4,
-      margin:
-          const EdgeInsets.only(
+      margin: const EdgeInsets.only(
         bottom: 16,
       ),
       child: ListTile(
@@ -277,8 +219,7 @@ class _DashboardPageState
           'R\$ ${valor.toStringAsFixed(2)}',
           style: TextStyle(
             color: cor,
-            fontWeight:
-                FontWeight.bold,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

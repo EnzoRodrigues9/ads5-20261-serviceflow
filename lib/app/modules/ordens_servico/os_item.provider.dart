@@ -11,23 +11,13 @@ class OsItemProvider extends BaseProvider<OsItem> {
     OsItem item,
   ) {
     return {
- 
       'os_id': item.osId,
-
       'servico_id': item.servicoId,
-
-      'descricao_snapshot':
-          item.descricaoSnapshot,
-
-      'preco_snapshot':
-          item.precoSnapshot,
-
+      'descricao_snapshot': item.descricaoSnapshot,
+      'preco_snapshot': item.precoSnapshot,
       'ativo': item.ativo,
     };
-    
   }
-
-  
 
   @override
   OsItem fromExternalFormat(
@@ -35,74 +25,54 @@ class OsItemProvider extends BaseProvider<OsItem> {
   ) {
     return OsItem(
       id: data['id'] as int?,
-
       osId: data['os_id'] as int?,
-
-      servicoId:
-          data['servico_id'] as int,
-
-      descricaoSnapshot:
-          data['descricao_snapshot']
-              as String?,
-
-      precoSnapshot:
-          data['preco_snapshot'] != null
-              ? (data['preco_snapshot']
-                      as num)
-                  .toDouble()
-              : null,
-
-      ativo:
-          data['ativo'] as bool? ??
-              true,
-
+      servicoId: data['servico_id'] as int,
+      descricaoSnapshot: data['descricao_snapshot'] as String?,
+      precoSnapshot: data['preco_snapshot'] != null
+          ? (data['preco_snapshot'] as num).toDouble()
+          : null,
+      ativo: data['ativo'] as bool? ?? true,
       isSync: 1,
-
-      createdAt:
-          data['created_at'] != null
-              ? DateTime.tryParse(
-                  data['created_at']
-                      .toString(),
-                )
-              : DateTime.now(),
+      createdAt: data['created_at'] != null
+          ? DateTime.tryParse(
+              data['created_at'].toString(),
+            )
+          : DateTime.now(),
     );
   }
 
-@override
-Future<bool> validateBeforeSync(
-  OsItem item,
-) async {
+  @override
+  Future<bool> validateBeforeSync(
+    OsItem item,
+  ) async {
+    print('🔍 Validando Item');
+    print('osId: ${item.osId}');
+    print('servicoId: ${item.servicoId}');
 
-  print('🔍 Validando Item');
-  print('osId: ${item.osId}');
-  print('servicoId: ${item.servicoId}');
+    if ((item.osId ?? 0) <= 0) {
+      print('❌ OS inválida');
 
-  if ((item.osId ?? 0) <= 0) {
+      handleError(
+        'validateBeforeSync',
+        'OS inválida',
+      );
 
-    print('❌ OS inválida');
+      return false;
+    }
 
-    handleError(
-      'validateBeforeSync',
-      'OS inválida',
-    );
+    if (item.servicoId <= 0) {
+      print('❌ Serviço inválido');
 
-    return false;
+      handleError(
+        'validateBeforeSync',
+        'Serviço inválido',
+      );
+
+      return false;
+    }
+
+    print('✅ Item válido');
+
+    return true;
   }
-
-  if (item.servicoId <= 0) {
-
-    print('❌ Serviço inválido');
-
-    handleError(
-      'validateBeforeSync',
-      'Serviço inválido',
-    );
-
-    return false;
-  }
-
-  print('✅ Item válido');
-
-  return true;
-}
 }

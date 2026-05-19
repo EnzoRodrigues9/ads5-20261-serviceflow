@@ -27,17 +27,18 @@ class UsuarioRepository extends BaseRepository<Usuario> {
       [email, id],
     );
   }
-  Future<void> updateId(int oldId, int newId) async {
-  final db = await getConnection();
 
-  await db.update(
-    tableName,
-    {
-      'id': newId,
-      'is_sync': 1,
-    },
-    where: 'id = ?',
-    whereArgs: [oldId],
-  );
-}
+  Future<void> updateId(int oldId, int newId) async {
+    final db = await getConnection();
+
+    await db.update(
+      tableName,
+      {
+        'id': newId,
+        'is_sync': 1,
+      },
+      where: 'id = ?',
+      whereArgs: [oldId],
+    );
+  }
 }

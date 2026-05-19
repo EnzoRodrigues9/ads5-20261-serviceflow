@@ -2,8 +2,7 @@ import 'package:serviceflow/app/core/base/base.validation.dart';
 import 'package:serviceflow/app/modules/servicos/servico.model.dart';
 import 'package:serviceflow/app/modules/servicos/servico.repository.dart';
 
-class ServicoValidation
-    extends BaseValidation<Servico, ServicoRepository> {
+class ServicoValidation extends BaseValidation<Servico, ServicoRepository> {
   ServicoValidation(
     ServicoRepository repository,
   ) : super(repository);
@@ -33,8 +32,7 @@ class ServicoValidation
   Future<void> validateRulesCreate(
     Servico model,
   ) async {
-    final exists =
-        await repository.existsByDescricao(
+    final exists = await repository.existsByDescricao(
       model.descricao,
     );
 
@@ -49,9 +47,7 @@ class ServicoValidation
   Future<void> validateRulesUpdate(
     Servico model,
   ) async {
-    final exists =
-        await repository
-            .existsByDescricaoWithoutId(
+    final exists = await repository.existsByDescricaoWithoutId(
       model.descricao,
       model.id!,
     );

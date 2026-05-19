@@ -25,33 +25,19 @@ class OsItem extends BaseModel {
   ) {
     return OsItem(
       id: map['id'] as int?,
-
-      createdAt:
-          map['created_at'] != null
-              ? DateTime.parse(
-                  map['created_at'],
-                )
-              : null,
-
+      createdAt: map['created_at'] != null
+          ? DateTime.parse(
+              map['created_at'],
+            )
+          : null,
       isSync: map['is_sync'] ?? 0,
-
       ativo: map['ativo'] == 1,
-
       osId: map['os_id'],
-
-      servicoId:
-          map['servico_id'] as int,
-
-      descricaoSnapshot:
-          map['descricao_snapshot']
-              as String?,
-
-      precoSnapshot:
-          map['preco_snapshot'] != null
-              ? (map['preco_snapshot']
-                      as num)
-                  .toDouble()
-              : null,
+      servicoId: map['servico_id'] as int,
+      descricaoSnapshot: map['descricao_snapshot'] as String?,
+      precoSnapshot: map['preco_snapshot'] != null
+          ? (map['preco_snapshot'] as num).toDouble()
+          : null,
     );
   }
 
@@ -59,16 +45,10 @@ class OsItem extends BaseModel {
   Map<String, dynamic> toMap() {
     return {
       ...super.toMap(),
-
       'os_id': osId,
-
       'servico_id': servicoId,
-
-      'descricao_snapshot':
-          descricaoSnapshot,
-
-      'preco_snapshot':
-          precoSnapshot,
+      'descricao_snapshot': descricaoSnapshot,
+      'preco_snapshot': precoSnapshot,
     };
   }
 
@@ -84,27 +64,13 @@ class OsItem extends BaseModel {
   }) {
     return OsItem(
       id: id ?? this.id,
-
-      createdAt:
-          createdAt ?? this.createdAt,
-
+      createdAt: createdAt ?? this.createdAt,
       isSync: isSync ?? this.isSync,
-
       ativo: ativo ?? this.ativo,
-
       osId: osId ?? this.osId,
-
-      servicoId:
-          servicoId ??
-              this.servicoId,
-
-      descricaoSnapshot:
-          descricaoSnapshot ??
-              this.descricaoSnapshot,
-
-      precoSnapshot:
-          precoSnapshot ??
-              this.precoSnapshot,
+      servicoId: servicoId ?? this.servicoId,
+      descricaoSnapshot: descricaoSnapshot ?? this.descricaoSnapshot,
+      precoSnapshot: precoSnapshot ?? this.precoSnapshot,
     );
   }
 }

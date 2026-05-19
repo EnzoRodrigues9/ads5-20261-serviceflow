@@ -79,10 +79,6 @@ class _CadastroClientePageState extends State<CadastroClientePage>
     try {
       final cliente = Cliente(
         id: widget.cliente?.id,
-        // IMPORTANTE: preserva isSync do cliente original ao editar.
-        // - Novo cliente: isSync = 0 (padrão do modelo) → BaseProvider fará POST
-        // - Cliente existente que já foi ao Supabase: isSync = 1 → fará PATCH
-        // - Cliente existente ainda não sincronizado: isSync = 0 → fará POST
         isSync: widget.cliente?.isSync ?? 0,
         nome: nomeController.text,
         documento: documentoController.text,

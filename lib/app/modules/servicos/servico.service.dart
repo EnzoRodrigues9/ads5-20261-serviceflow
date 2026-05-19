@@ -3,10 +3,8 @@ import 'package:serviceflow/app/modules/servicos/servico.model.dart';
 import 'package:serviceflow/app/modules/servicos/servico.repository.dart';
 import 'package:serviceflow/app/modules/servicos/servico.validation.dart';
 
-class ServicoService extends BaseService<
-    Servico,
-    ServicoRepository,
-    ServicoValidation> {
+class ServicoService
+    extends BaseService<Servico, ServicoRepository, ServicoValidation> {
   ServicoService(
     ServicoValidation validation,
     ServicoRepository repository,
@@ -35,8 +33,6 @@ class ServicoService extends BaseService<
       orderBy: 'descricao ASC',
     );
 
-    return result
-        .map((map) => Servico.fromMap(map))
-        .toList();
+    return result.map((map) => Servico.fromMap(map)).toList();
   }
 }

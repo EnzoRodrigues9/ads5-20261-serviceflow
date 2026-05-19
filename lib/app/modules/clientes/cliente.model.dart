@@ -14,7 +14,7 @@ class Cliente extends BaseModel {
     int? id,
     DateTime? createdAt,
     int isSync = 0,
-    bool ativo = true, // Por padrão ativo
+    bool ativo = true,
     required this.nome,
     required this.email,
     required this.telefone,
@@ -25,7 +25,6 @@ class Cliente extends BaseModel {
     this.cep,
   }) : super(id: id, createdAt: createdAt, isSync: isSync, ativo: ativo);
 
-  // Construtor nomeado para criar um Cliente a partir de um Map
   Cliente.fromMap(Map<String, dynamic> map)
       : nome = map['nome'] as String,
         email = map['email'] as String,
@@ -35,14 +34,13 @@ class Cliente extends BaseModel {
         cidade = map['cidade'] as String?,
         estado = map['estado'] as String?,
         cep = map['cep'] as String?,
-        super.fromMap(map); // Chama o construtor da base
+        super.fromMap(map);
 
-  // Método para converter os atributos do Cliente para Map
   @override
   Map<String, dynamic> toMap() {
-    final baseMap = super.toMap(); // Obtém o Map da base
+    final baseMap = super.toMap();
     return {
-      ...baseMap, // Inclui os campos da base (id, created_at, is_sync)
+      ...baseMap,
       'nome': nome,
       'email': email,
       'telefone': telefone,
@@ -54,7 +52,6 @@ class Cliente extends BaseModel {
     };
   }
 
-  // Método para criar cópia com novos valores (útil para updates)
   Cliente copyWith({
     int? id,
     DateTime? createdAt,

@@ -4,11 +4,8 @@ import 'os_item.model.dart';
 import 'os_item.repository.dart';
 import 'os_item.validation.dart';
 
-class OsItemService extends BaseService<
-    OsItem,
-    OsItemRepository,
-    OsItemValidation> {
-
+class OsItemService
+    extends BaseService<OsItem, OsItemRepository, OsItemValidation> {
   OsItemService(
     super.validation,
     super.repository,

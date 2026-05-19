@@ -2,7 +2,6 @@ import 'package:serviceflow/app/core/base/base.provider.dart';
 import 'usuario.model.dart';
 
 class UsuarioProvider extends BaseProvider<Usuario> {
-
   @override
   String get endpoint => '/rest/v1/usuarios';
 
@@ -42,7 +41,6 @@ class UsuarioProvider extends BaseProvider<Usuario> {
 
   @override
   Future<bool> validateBeforeSync(Usuario usuario) async {
-
     if (usuario.nomeCompleto.trim().isEmpty) {
       handleError('validateBeforeSync', 'Nome obrigatório');
       return false;

@@ -3,8 +3,7 @@ import 'package:serviceflow/app/core/base/base.validation.dart';
 import 'usuario.model.dart';
 import 'usuario.repository.dart';
 
-class UsuarioValidation
-    extends BaseValidation<Usuario, UsuarioRepository> {
+class UsuarioValidation extends BaseValidation<Usuario, UsuarioRepository> {
   UsuarioValidation(
     super.repository,
   );

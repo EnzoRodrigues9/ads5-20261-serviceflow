@@ -12,8 +12,7 @@ import '../../servico.service.dart';
 import '../../servico.validation.dart';
 import '../../servico.schedule.dart';
 
-class CadastroServicoPage
-    extends StatefulWidget {
+class CadastroServicoPage extends StatefulWidget {
   final Servico? servico;
 
   const CadastroServicoPage({
@@ -22,53 +21,39 @@ class CadastroServicoPage
   });
 
   @override
-  State<CadastroServicoPage> createState() =>
-      _CadastroServicoPageState();
+  State<CadastroServicoPage> createState() => _CadastroServicoPageState();
 }
 
-class _CadastroServicoPageState
-    extends State<CadastroServicoPage>
+class _CadastroServicoPageState extends State<CadastroServicoPage>
     with MessagesMixin {
   final repository = ServicoRepository();
 
-  late final validation =
-      ServicoValidation(repository);
+  late final validation = ServicoValidation(repository);
 
-  late final service =
-      ServicoService(validation, repository);
+  late final service = ServicoService(validation, repository);
 
-  late TextEditingController
-      descricaoController;
+  late TextEditingController descricaoController;
 
-  late TextEditingController
-      precoController;
+  late TextEditingController precoController;
 
-  late TextEditingController
-      tempoController;
+  late TextEditingController tempoController;
 
   @override
   void initState() {
     super.initState();
 
-    descricaoController =
-        TextEditingController();
+    descricaoController = TextEditingController();
 
-    precoController =
-        TextEditingController();
+    precoController = TextEditingController();
 
-    tempoController =
-        TextEditingController();
+    tempoController = TextEditingController();
 
     if (widget.servico != null) {
-      descricaoController.text =
-          widget.servico!.descricao;
+      descricaoController.text = widget.servico!.descricao;
 
-      precoController.text =
-          widget.servico!.preco.toString();
+      precoController.text = widget.servico!.preco.toString();
 
-      tempoController.text =
-          widget.servico!.tempoEstimado ??
-              '';
+      tempoController.text = widget.servico!.tempoEstimado ?? '';
     }
   }
 
@@ -85,13 +70,11 @@ class _CadastroServicoPageState
     try {
       final servico = Servico(
         id: widget.servico?.id,
-        descricao:
-            descricaoController.text,
+        descricao: descricaoController.text,
         preco: double.parse(
           precoController.text,
         ),
-        tempoEstimado:
-            tempoController.text,
+        tempoEstimado: tempoController.text,
       );
 
       if (widget.servico == null) {
@@ -99,7 +82,7 @@ class _CadastroServicoPageState
       } else {
         await service.update(servico);
       }
-        
+
       await ServicoSchedule().syncPending();
 
       showSuccess(
@@ -125,25 +108,19 @@ class _CadastroServicoPageState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.servico == null
-              ? 'Cadastro de Serviço'
-              : 'Editar Serviço',
+          widget.servico == null ? 'Cadastro de Serviço' : 'Editar Serviço',
         ),
         backgroundColor: colors.primary,
       ),
       body: SingleChildScrollView(
-        padding:
-            const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             CustomListCard(
               leading: CircleAvatar(
-                backgroundColor: colors
-                    .primary
-                    .withOpacity(0.12),
+                backgroundColor: colors.primary.withOpacity(0.12),
                 child: Icon(
-                  Icons
-                      .miscellaneous_services,
+                  Icons.miscellaneous_services,
                   color: colors.primary,
                 ),
               ),
@@ -151,26 +128,19 @@ class _CadastroServicoPageState
                 'Descrição',
               ),
               subtitle: Padding(
-                padding:
-                    const EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   top: 12,
                 ),
                 child: CustomTextField(
-                  label:
-                      'Descrição do serviço',
-                  controller:
-                      descricaoController,
+                  label: 'Descrição do serviço',
+                  controller: descricaoController,
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
             CustomListCard(
               leading: CircleAvatar(
-                backgroundColor: colors
-                    .secondary
-                    .withOpacity(0.12),
+                backgroundColor: colors.secondary.withOpacity(0.12),
                 child: Icon(
                   Icons.attach_money,
                   color: colors.secondary,
@@ -180,27 +150,20 @@ class _CadastroServicoPageState
                 'Preço',
               ),
               subtitle: Padding(
-                padding:
-                    const EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   top: 12,
                 ),
                 child: CustomTextField(
                   label: 'Preço',
-                  controller:
-                      precoController,
-                  keyboardType:
-                      TextInputType.number,
+                  controller: precoController,
+                  keyboardType: TextInputType.number,
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
             CustomListCard(
               leading: CircleAvatar(
-                backgroundColor: colors
-                    .tertiary
-                    .withOpacity(0.12),
+                backgroundColor: colors.tertiary.withOpacity(0.12),
                 child: Icon(
                   Icons.timer,
                   color: colors.tertiary,
@@ -210,39 +173,28 @@ class _CadastroServicoPageState
                 'Tempo Estimado',
               ),
               subtitle: Padding(
-                padding:
-                    const EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   top: 12,
                 ),
                 child: CustomTextField(
-                  label:
-                      'Ex: 2 horas',
-                  controller:
-                      tempoController,
+                  label: 'Ex: 2 horas',
+                  controller: tempoController,
                 ),
               ),
             ),
-
             const SizedBox(height: 32),
-
             CustomPrimaryButton(
-              text:
-                  widget.servico == null
-                      ? 'Salvar Serviço'
-                      : 'Atualizar Serviço',
+              text: widget.servico == null
+                  ? 'Salvar Serviço'
+                  : 'Atualizar Serviço',
               icon: Icons.save,
-              onPressed:
-                  salvarServico,
+              onPressed: salvarServico,
             ),
-
             const SizedBox(height: 16),
-
             CustomSecondaryButton(
               text: 'Voltar',
               icon: Icons.arrow_back,
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(),
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         ),

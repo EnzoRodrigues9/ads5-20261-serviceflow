@@ -29,7 +29,6 @@ class ClienteValidation extends BaseValidation<Cliente, ClienteRepository> {
 
   @override
   Future<void> validateRulesCreate(Cliente model) async {
-    // Regras de negócio específicas para criação
     bool emailExists = await repository.existsByEmail(model.email);
     if (emailExists) {
       throw Exception("Já existe um cliente com este email");
@@ -43,7 +42,6 @@ class ClienteValidation extends BaseValidation<Cliente, ClienteRepository> {
 
   @override
   Future<void> validateRulesUpdate(Cliente model) async {
-    // Regras de negócio específicas para atualização
     if (await repository.existsByEmailWithoutId(model.email, model.id!)) {
       throw Exception("Já existe um cliente com este email");
     }

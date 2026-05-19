@@ -11,12 +11,10 @@ class UsuariosListPage extends StatefulWidget {
   const UsuariosListPage({super.key});
 
   @override
-  State<UsuariosListPage> createState() =>
-      _UsuariosListPageState();
+  State<UsuariosListPage> createState() => _UsuariosListPageState();
 }
 
-class _UsuariosListPageState
-    extends State<UsuariosListPage> {
+class _UsuariosListPageState extends State<UsuariosListPage> {
   final repository = UsuarioRepository();
 
   List<Usuario> usuarios = [];
@@ -46,24 +44,16 @@ class _UsuariosListPageState
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).colorScheme;
+    final colors = Theme.of(context).colorScheme;
 
-    final listaFiltrada =
-        usuarios.where((usuario) {
-      return usuario.nomeCompleto
-              .toLowerCase()
-              .contains(
+    final listaFiltrada = usuarios.where((usuario) {
+      return usuario.nomeCompleto.toLowerCase().contains(
                 busca.toLowerCase(),
               ) ||
-          usuario.email
-              .toLowerCase()
-              .contains(
+          usuario.email.toLowerCase().contains(
                 busca.toLowerCase(),
               ) ||
-          usuario.perfil
-              .toLowerCase()
-              .contains(
+          usuario.perfil.toLowerCase().contains(
                 busca.toLowerCase(),
               );
     }).toList();
@@ -75,16 +65,14 @@ class _UsuariosListPageState
         ),
         backgroundColor: colors.primary,
       ),
-      floatingActionButton:
-          FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         backgroundColor: colors.primary,
         child: const Icon(Icons.add),
         onPressed: () async {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) =>
-                  const CadastroUsuarioPage(),
+              builder: (_) => const CadastroUsuarioPage(),
             ),
           );
 
@@ -94,17 +82,12 @@ class _UsuariosListPageState
       body: Column(
         children: [
           Padding(
-            padding:
-                const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: TextField(
-              decoration:
-                  const InputDecoration(
-                hintText:
-                    'Buscar usuário...',
-                prefixIcon:
-                    Icon(Icons.search),
-                border:
-                    OutlineInputBorder(),
+              decoration: const InputDecoration(
+                hintText: 'Buscar usuário...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
               ),
               onChanged: (value) {
                 setState(() {
@@ -117,72 +100,53 @@ class _UsuariosListPageState
             child: listaFiltrada.isEmpty
                 ? const CustomEmptyStateCard(
                     icon: Icons.people,
-                    title:
-                        'Nenhum usuário encontrado',
+                    title: 'Nenhum usuário encontrado',
                   )
                 : ListView.builder(
-                    itemCount:
-                        listaFiltrada.length,
-                    itemBuilder:
-                        (_, index) {
-                      final usuario =
-                          listaFiltrada[
-                              index];
+                    itemCount: listaFiltrada.length,
+                    itemBuilder: (_, index) {
+                      final usuario = listaFiltrada[index];
 
                       return CustomListCard(
-                        margin:
-                            const EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
                         ),
-                        leading:
-                            CircleAvatar(
-                          backgroundColor:
-                              colors.primary
-                                  .withOpacity(
-                                      0.12),
+                        leading: CircleAvatar(
+                          backgroundColor: colors.primary.withOpacity(0.12),
                           child: Icon(
                             Icons.person,
-                            color:
-                                colors.primary,
+                            color: colors.primary,
                           ),
                         ),
                         title: Text(
-                          usuario
-                              .nomeCompleto,
+                          usuario.nomeCompleto,
                         ),
                         subtitle: Text(
                           '${usuario.email}\nPerfil: ${usuario.perfil}',
                         ),
-                        trailing:
-                            PopupMenuButton(
+                        trailing: PopupMenuButton(
                           itemBuilder: (_) => [
                             const PopupMenuItem(
-                              value:
-                                  'editar',
+                              value: 'editar',
                               child: Text(
                                 'Editar',
                               ),
                             ),
                             const PopupMenuItem(
-                              value:
-                                  'excluir',
+                              value: 'excluir',
                               child: Text(
                                 'Excluir',
                               ),
                             ),
                           ],
-                          onSelected:
-                              (value) async {
-                            if (value ==
-                                'editar') {
+                          onSelected: (value) async {
+                            if (value == 'editar') {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) =>
-                                      CadastroUsuarioPage(
-                                    usuario:
-                                        usuario,
+                                  builder: (_) => CadastroUsuarioPage(
+                                    usuario: usuario,
                                   ),
                                 ),
                               );
@@ -190,8 +154,7 @@ class _UsuariosListPageState
                               carregarUsuarios();
                             }
 
-                            if (value ==
-                                'excluir') {
+                            if (value == 'excluir') {
                               await deletarUsuario(
                                 usuario.id!,
                               );

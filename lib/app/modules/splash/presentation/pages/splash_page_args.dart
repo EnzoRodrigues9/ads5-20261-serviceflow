@@ -33,7 +33,6 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Recuperamos o objeto e avisamos ao Flutter: "Trate isso como um OrdemServico"
     final maxSeconds = ModalRoute.of(context)!.settings.arguments as int? ?? 7;
     iniciaTimer(maxSeconds);
 

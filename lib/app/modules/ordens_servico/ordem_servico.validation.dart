@@ -3,10 +3,8 @@ import 'package:serviceflow/app/core/base/base.validation.dart';
 import 'ordem_servico.model.dart';
 import 'ordem_servico.repository.dart';
 
-class OrdemServicoValidation extends BaseValidation<
-    OrdemServico,
-    OrdemServicoRepository> {
-
+class OrdemServicoValidation
+    extends BaseValidation<OrdemServico, OrdemServicoRepository> {
   OrdemServicoValidation(
     super.repository,
   );

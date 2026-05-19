@@ -22,20 +22,16 @@ class CadastroUsuarioPage extends StatefulWidget {
   });
 
   @override
-  State<CadastroUsuarioPage> createState() =>
-      _CadastroUsuarioPageState();
+  State<CadastroUsuarioPage> createState() => _CadastroUsuarioPageState();
 }
 
-class _CadastroUsuarioPageState
-    extends State<CadastroUsuarioPage>
+class _CadastroUsuarioPageState extends State<CadastroUsuarioPage>
     with MessagesMixin {
   final repository = UsuarioRepository();
 
-  late final validation =
-      UsuarioValidation(repository);
+  late final validation = UsuarioValidation(repository);
 
-  late final service =
-      UsuarioService(validation, repository);
+  late final service = UsuarioService(validation, repository);
 
   late TextEditingController nomeController;
   late TextEditingController emailController;
@@ -52,14 +48,11 @@ class _CadastroUsuarioPageState
     grupoController = TextEditingController();
 
     if (widget.usuario != null) {
-      nomeController.text =
-          widget.usuario!.nomeCompleto;
+      nomeController.text = widget.usuario!.nomeCompleto;
 
-      emailController.text =
-          widget.usuario!.email;
+      emailController.text = widget.usuario!.email;
 
-      grupoController.text =
-          widget.usuario!.grupoId;
+      grupoController.text = widget.usuario!.grupoId;
 
       perfil = widget.usuario!.perfil;
     }
@@ -73,37 +66,37 @@ class _CadastroUsuarioPageState
     super.dispose();
   }
 
-Future<void> salvarUsuario() async {
-  try {
-    final usuario = Usuario(
-      id: widget.usuario?.id,
-      supabaseId: widget.usuario?.supabaseId ?? const Uuid().v4(),
-      nomeCompleto: nomeController.text,
-      email: emailController.text,
-      grupoId: grupoController.text,
-      perfil: perfil,
-    );
+  Future<void> salvarUsuario() async {
+    try {
+      final usuario = Usuario(
+        id: widget.usuario?.id,
+        supabaseId: widget.usuario?.supabaseId ?? const Uuid().v4(),
+        nomeCompleto: nomeController.text,
+        email: emailController.text,
+        grupoId: grupoController.text,
+        perfil: perfil,
+      );
 
-    if (widget.usuario == null) {
-      await service.create(usuario);
-    } else {
-      await service.update(usuario);
+      if (widget.usuario == null) {
+        await service.create(usuario);
+      } else {
+        await service.update(usuario);
+      }
+
+      await UsuarioSchedule().syncPending();
+
+      showSuccess(
+        context,
+        widget.usuario == null
+            ? 'Usuário cadastrado com sucesso'
+            : 'Usuário atualizado com sucesso',
+      );
+
+      Navigator.of(context).pop();
+    } catch (e) {
+      showError(context, e.toString());
     }
-
-    await UsuarioSchedule().syncPending();
-
-    showSuccess(
-      context,
-      widget.usuario == null
-          ? 'Usuário cadastrado com sucesso'
-          : 'Usuário atualizado com sucesso',
-    );
-
-    Navigator.of(context).pop();
-  } catch (e) {
-    showError(context, e.toString());
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -112,9 +105,7 @@ Future<void> salvarUsuario() async {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.usuario == null
-              ? 'Cadastro de Usuário'
-              : 'Editar Usuário',
+          widget.usuario == null ? 'Cadastro de Usuário' : 'Editar Usuário',
         ),
         backgroundColor: colors.primary,
       ),
@@ -125,8 +116,7 @@ Future<void> salvarUsuario() async {
             children: [
               CustomListCard(
                 leading: CircleAvatar(
-                  backgroundColor:
-                      colors.primary.withOpacity(0.12),
+                  backgroundColor: colors.primary.withOpacity(0.12),
                   child: Icon(
                     Icons.person,
                     color: colors.primary,
@@ -141,13 +131,10 @@ Future<void> salvarUsuario() async {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
               CustomListCard(
                 leading: CircleAvatar(
-                  backgroundColor:
-                      colors.secondary.withOpacity(0.12),
+                  backgroundColor: colors.secondary.withOpacity(0.12),
                   child: Icon(
                     Icons.email,
                     color: colors.secondary,
@@ -162,13 +149,10 @@ Future<void> salvarUsuario() async {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
               CustomListCard(
                 leading: CircleAvatar(
-                  backgroundColor:
-                      colors.tertiary.withOpacity(0.12),
+                  backgroundColor: colors.tertiary.withOpacity(0.12),
                   child: Icon(
                     Icons.groups,
                     color: colors.tertiary,
@@ -183,13 +167,10 @@ Future<void> salvarUsuario() async {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
               CustomListCard(
                 leading: CircleAvatar(
-                  backgroundColor:
-                      colors.primary.withOpacity(0.12),
+                  backgroundColor: colors.primary.withOpacity(0.12),
                   child: Icon(
                     Icons.admin_panel_settings,
                     color: colors.primary,
@@ -225,9 +206,7 @@ Future<void> salvarUsuario() async {
                   ),
                 ),
               ),
-
               const SizedBox(height: 32),
-
               CustomPrimaryButton(
                 text: widget.usuario == null
                     ? 'Salvar Usuário'
@@ -235,14 +214,11 @@ Future<void> salvarUsuario() async {
                 icon: Icons.save,
                 onPressed: salvarUsuario,
               ),
-
               const SizedBox(height: 16),
-
               CustomSecondaryButton(
                 text: 'Voltar',
                 icon: Icons.arrow_back,
-                onPressed: () =>
-                    Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           ),

@@ -13,19 +13,15 @@ class ServicoListPage extends StatefulWidget {
   const ServicoListPage({super.key});
 
   @override
-  State<ServicoListPage> createState() =>
-      _ServicoListPageState();
+  State<ServicoListPage> createState() => _ServicoListPageState();
 }
 
-class _ServicoListPageState
-    extends State<ServicoListPage> {
+class _ServicoListPageState extends State<ServicoListPage> {
   final repository = ServicoRepository();
 
-  late final validation =
-      ServicoValidation(repository);
+  late final validation = ServicoValidation(repository);
 
-  late final service =
-      ServicoService(validation, repository);
+  late final service = ServicoService(validation, repository);
 
   List<Servico> servicos = [];
 
@@ -49,12 +45,8 @@ class _ServicoListPageState
     final colors = Theme.of(context).colorScheme;
 
     final listaFiltrada = servicos.where((servico) {
-      return servico.descricao
-              .toLowerCase()
-              .contains(busca.toLowerCase()) ||
-          servico.preco
-              .toString()
-              .contains(busca);
+      return servico.descricao.toLowerCase().contains(busca.toLowerCase()) ||
+          servico.preco.toString().contains(busca);
     }).toList();
 
     return Scaffold(
@@ -71,8 +63,7 @@ class _ServicoListPageState
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) =>
-                  const CadastroServicoPage(),
+              builder: (_) => const CadastroServicoPage(),
             ),
           );
 
@@ -99,31 +90,23 @@ class _ServicoListPageState
           Expanded(
             child: listaFiltrada.isEmpty
                 ? const CustomEmptyStateCard(
-                    icon:
-                        Icons.miscellaneous_services,
-                    title:
-                        'Nenhum serviço encontrado',
+                    icon: Icons.miscellaneous_services,
+                    title: 'Nenhum serviço encontrado',
                   )
                 : ListView.builder(
-                    itemCount:
-                        listaFiltrada.length,
+                    itemCount: listaFiltrada.length,
                     itemBuilder: (_, index) {
-                      final servico =
-                          listaFiltrada[index];
+                      final servico = listaFiltrada[index];
 
                       return CustomListCard(
-                        margin:
-                            const EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
                         ),
                         leading: CircleAvatar(
-                          backgroundColor: colors
-                              .primary
-                              .withOpacity(0.12),
+                          backgroundColor: colors.primary.withOpacity(0.12),
                           child: Icon(
-                            Icons
-                                .miscellaneous_services,
+                            Icons.miscellaneous_services,
                             color: colors.primary,
                           ),
                         ),
@@ -131,9 +114,7 @@ class _ServicoListPageState
                           servico.descricao,
                         ),
                         subtitle: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(
                               height: 4,
@@ -145,41 +126,32 @@ class _ServicoListPageState
                               height: 4,
                             ),
                             Text(
-                              servico
-                                      .tempoEstimado ??
-                                  'Sem tempo estimado',
+                              servico.tempoEstimado ?? 'Sem tempo estimado',
                             ),
                           ],
                         ),
-                        trailing:
-                            PopupMenuButton(
+                        trailing: PopupMenuButton(
                           itemBuilder: (_) => [
                             const PopupMenuItem(
-                              value:
-                                  'editar',
+                              value: 'editar',
                               child: Text(
                                 'Editar',
                               ),
                             ),
                             const PopupMenuItem(
-                              value:
-                                  'excluir',
+                              value: 'excluir',
                               child: Text(
                                 'Excluir',
                               ),
                             ),
                           ],
-                          onSelected:
-                              (value) async {
-                            if (value ==
-                                'editar') {
+                          onSelected: (value) async {
+                            if (value == 'editar') {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) =>
-                                      CadastroServicoPage(
-                                    servico:
-                                        servico,
+                                  builder: (_) => CadastroServicoPage(
+                                    servico: servico,
                                   ),
                                 ),
                               );
@@ -187,10 +159,8 @@ class _ServicoListPageState
                               carregarServicos();
                             }
 
-                            if (value ==
-                                'excluir') {
-                              await service
-                                  .softDelete(
+                            if (value == 'excluir') {
+                              await service.softDelete(
                                 servico.id!,
                               );
 

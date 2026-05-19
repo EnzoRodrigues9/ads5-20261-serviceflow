@@ -46,8 +46,7 @@ class HomePage extends StatelessWidget {
                         description: 'Visualizar relatórios',
                         icon: Icons.bar_chart,
                         color: AppColors.warning,
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/dashboard'),
+                        onTap: () => Navigator.pushNamed(context, '/dashboard'),
                       ),
                       CustomMenuCard(
                         title: 'Usuários',
@@ -68,32 +67,12 @@ class HomePage extends StatelessWidget {
                         description: 'Gerenciar serviços',
                         icon: Icons.settings,
                         color: Colors.grey,
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/servicos'),
+                        onTap: () => Navigator.pushNamed(context, '/servicos'),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: AppSizes.lg),
-                CustomQuickActionsPanel(
-                  actions: [
-                    CustomQuickActionButton(
-                      icon: Icons.add,
-                      label: 'Nova OS',
-                      onTap: () => Navigator.pushNamed(context, '/nova-os'),
-                    ),
-                    CustomQuickActionButton(
-                      icon: Icons.search,
-                      label: 'Buscar',
-                      onTap: () => Navigator.pushNamed(context, '/buscar'),
-                    ),
-                    CustomQuickActionButton(
-                      icon: Icons.pending_actions,
-                      label: 'Pendentes',
-                      onTap: () => Navigator.pushNamed(context, '/pendentes'),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),

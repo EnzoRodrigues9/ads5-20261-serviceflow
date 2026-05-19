@@ -3,10 +3,7 @@ import 'package:serviceflow/app/core/base/base.validation.dart';
 import 'os_item.model.dart';
 import 'os_item.repository.dart';
 
-class OsItemValidation extends BaseValidation<
-    OsItem,
-    OsItemRepository> {
-
+class OsItemValidation extends BaseValidation<OsItem, OsItemRepository> {
   OsItemValidation(
     super.repository,
   );
@@ -33,8 +30,7 @@ class OsItemValidation extends BaseValidation<
       );
     }
 
-    if ((model.precoSnapshot ?? 0) <=
-        0) {
+    if ((model.precoSnapshot ?? 0) <= 0) {
       throw Exception(
         'Preço inválido',
       );

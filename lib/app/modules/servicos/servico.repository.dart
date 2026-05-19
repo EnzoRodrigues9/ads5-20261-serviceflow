@@ -30,21 +30,19 @@ class ServicoRepository extends BaseRepository<Servico> {
   }
 
   Future<void> updateId(
-  int oldId,
-  int newId,
-) async {
+    int oldId,
+    int newId,
+  ) async {
+    final db = await getConnection();
 
-  final db =
-      await getConnection();
-
-  await db.update(
-    tableName,
-    {
-      'id': newId,
-      'is_sync': 1,
-    },
-    where: 'id = ?',
-    whereArgs: [oldId],
-  );
-}
+    await db.update(
+      tableName,
+      {
+        'id': newId,
+        'is_sync': 1,
+      },
+      where: 'id = ?',
+      whereArgs: [oldId],
+    );
+  }
 }
